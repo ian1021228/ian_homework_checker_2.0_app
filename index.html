@@ -2,16 +2,17 @@
 <html lang="zh-TW" translate="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate">
+    <meta name="google" content=\"notranslate\">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>作業點收系統 (本地版)</title>
     
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/ian_homework_checker_2.0_app/manifest.json">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/4f46e5/ffffff?text=App">
+    <link rel="apple-touch-icon" href="icon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
@@ -23,37 +24,19 @@
         .modal, .confirm-modal, #date-picker-modal { transition: opacity 0.2s ease-out; }
         .modal-content, .confirm-modal-content, #date-picker-content {
             transition: transform 0.2s ease-out;
-            backface-visibility: hidden;
-            transform-style: preserve-3d;
         }
-        .calendar-day.today { background-color: #3b82f6; color: white; border-radius: 50%; }
-        .calendar-day.selected { background-color: #8b5cf6; color: white; border-radius: 50%; }
-        .homework-link { cursor: pointer; color: #4f46e5; text-decoration: none; transition: color 0.2s; }
-        .homework-link:hover { color: #4338ca; text-decoration: underline; }
-        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s; }
-        .color-dot:hover { transform: scale(1.1); border-color: rgba(0,0,0,0.2); }
-        .has-banner { padding-top: 40px; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
     </style>
-  <!-- 修正後的 Manifest 連結 -->
-  <link rel="manifest" href="/ian_homework_checker_2.0_app/manifest.json">
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/ian_homework_checker_2.0_app/sw.js')
-          .then(reg => {
-            console.log('SW 註冊成功，範圍在:', reg.scope);
-            // 🌟 移除任何會強制更新或接管網頁的控制碼，讓它安靜地在背景準備就好
-          })
-          .catch(err => console.log('SW 註冊失敗:', err));
-      });
-    }
-  </script> </head>
-</script> </head>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/ian_homework_checker_2.0_app/sw.js')
+                    .then(reg => console.log('系統背景連線成功:', reg.scope))
+                    .catch(err => console.log('暫時無法使用離線功能:', err));
+            });
+        }
+    </script>
+</head>
 <body class="bg-gray-100 text-gray-800">
 
     <div id="sync-banner" class="hidden bg-indigo-600 text-white px-4 py-2 flex justify-between items-center text-sm z-[90] fixed top-0 left-0 w-full shadow-md">
