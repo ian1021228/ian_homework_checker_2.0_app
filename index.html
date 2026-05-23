@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>作業點收系統 (本地增強版)</title>
+    <title>作業點收系統 (本地版)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
@@ -38,6 +38,18 @@
         ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
     </style>
+  <!-- 修正後的 Manifest 連結 -->
+  <link rel="manifest" href="/ian_homework_checker_2.0_app/manifest.json">
+
+  <!-- 修正後的 Service Worker 註冊 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/ian_homework_checker_2.0_app/sw.js')
+          .then(reg => console.log('SW 註冊成功:', reg.scope))
+          .catch(err => console.log('SW 註冊失敗:', err));
+      });
+    }
 </head>
 <body class="bg-gray-100 text-gray-800">
 
