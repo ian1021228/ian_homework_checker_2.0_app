@@ -1,8 +1,10 @@
 const CACHE_NAME = 'homework-tracker-v1';
+// 在 sw.js 裡，確保 urlsToCache 的路徑包含你的專案名稱
 const urlsToCache = [
-    './',
-    './index.html',
-    './manifest.json'
+    '/ian_homework_checker_2.0_app/',
+    '/ian_homework_checker_2.0_app/index.html',
+    '/ian_homework_checker_2.0_app/manifest.json',
+    '/ian_homework_checker_2.0_app/icon.png'
 ];
 
 // 安裝 Service Worker 並快取基本檔案
