@@ -1,19 +1,25 @@
 const CACHE_NAME = 'homework-tracker-v1';
-// 在 sw.js 裡，確保 urlsToCache 的路徑包含你的專案名稱
+const BASE_URL = '/ian_homework_checker_2.0_app';
+
 const urlsToCache = [
-    '/ian_homework_checker_2.0_app/',
-    '/ian_homework_checker_2.0_app/index.html',
-    '/ian_homework_checker_2.0_app/manifest.json',
-    '/ian_homework_checker_2.0_app/icon.png'
+    `${BASE_URL}/`,
+    `${BASE_URL}/index.html`,
+    `${BASE_URL}/manifest.json`,
+    `${BASE_URL}/icon.png`
 ];
 
-// 安裝 Service Worker 並快取基本檔案
+// 安裝 Service Worker
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => {
-            console.log('Opened cache');
-            return cache.addAll(urlsToCache);
+        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    );
+});
+
+// 攔截請求，確保這能啟動安裝程序
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request);
         })
     );
 });
