@@ -41,15 +41,18 @@
   <!-- 修正後的 Manifest 連結 -->
   <link rel="manifest" href="/ian_homework_checker_2.0_app/manifest.json">
 
-  <!-- 修正後的 Service Worker 註冊 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/ian_homework_checker_2.0_app/sw.js')
-          .then(reg => console.log('SW 註冊成功:', reg.scope))
+          .then(reg => {
+            console.log('SW 註冊成功，範圍在:', reg.scope);
+            // 🌟 移除任何會強制更新或接管網頁的控制碼，讓它安靜地在背景準備就好
+          })
           .catch(err => console.log('SW 註冊失敗:', err));
       });
     }
+  </script> </head>
 </script> </head>
 <body class="bg-gray-100 text-gray-800">
 
