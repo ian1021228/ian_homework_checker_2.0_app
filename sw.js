@@ -1,3 +1,2 @@
-self.addEventListener('fetch', event => {
-    // 什麼都不做，直接讓它從網路抓
-});
+// 這是空的 Service Worker，確保不會報錯
+console.log("SW loaded");
