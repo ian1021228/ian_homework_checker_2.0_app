@@ -2,7 +2,7 @@
 <html lang="zh-TW" translate="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content=\"notranslate\">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>作業點收系統 (本地版)</title>
     
@@ -183,6 +183,7 @@
         </div>
     </div>
 
+    <!-- Modals -->
     <div id="intro-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal z-[100]">
         <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl transform scale-95 max-h-[90vh] flex flex-col">
             <h2 class="text-2xl font-bold mb-4 text-gray-800 flex-shrink-0 border-b pb-2">📖 系統功能與使用教學</h2>
@@ -198,23 +199,10 @@
                 <div>
                     <h3 class="text-lg font-bold text-indigo-700 mb-1">📝 作業點收與管理</h3>
                     <ul class="list-disc pl-5 space-y-1">
-                        <li><b>智慧缺號排除：</b>新增作業時，可輸入班級缺號（如轉出學生），系統建立的方格名單會自動跳過該號碼，並會自動記憶上次的設定。</li>
+                        <li><b>智慧缺號排除：</b>支援單號(例如 5)與範圍(例如 20-25)輸入，自動跳過該號碼。</li>
                         <li><b>全班一鍵變更：</b>點進作業後，可使用上方「⚡ 全班一鍵變更」下拉選單，瞬間將全班狀態改為「已繳交」或「已完成」。</li>
                         <li><b>點擊狀態切換：</b>滑鼠點擊或手指觸控座號方格，即可在不同狀態間循環切換。</li>
                     </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-indigo-700 mb-1">📖 聯絡簿整合功能</h3>
-                    <p>進入聯絡簿後，輸入當日事項。游標移到事項右側會出現三個圖示：</p>
-                    <ul class="list-disc pl-5 space-y-1">
-                        <li><b>📖 (轉作業)：</b>直接把該行文字當作作業名稱，開啟新增作業畫面，無縫銜接！</li>
-                        <li><b>✏️ (編輯)：</b>直接修改該行錯字。</li>
-                        <li><b>&times; (刪除)：</b>移除該行事項。</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-indigo-700 mb-1">⏱️ 時光機與自動備份</h3>
-                    <p>進入「資料管理」，系統擁有<b>時光機功能</b>，每天會為您在瀏覽器底層備份前3天的資料。萬一實體檔案遺失，點擊還原即可瞬間救回！</p>
                 </div>
             </div>
             <div class="flex justify-end pt-4 mt-4 border-t border-gray-200 flex-shrink-0">
@@ -247,10 +235,7 @@
            
            <div class="space-y-4">
                <div class="p-4 border border-indigo-200 rounded-lg bg-indigo-50">
-                   <h3 class="font-bold text-indigo-900 mb-2 flex items-center">
-                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        自動儲存設定
-                   </h3>
+                   <h3 class="font-bold text-indigo-900 mb-2 flex items-center">自動儲存設定</h3>
                    <div id="current-file-status" class="text-sm text-indigo-700 mb-4 font-medium leading-relaxed">
                        狀態：未綁定本地檔案 (資料僅存在瀏覽器)
                    </div>
@@ -258,42 +243,15 @@
                    <button id="unlink-file-btn" class="w-full bg-white text-red-600 border border-red-200 font-semibold py-2 px-4 rounded hover:bg-red-50 hidden transition-colors">解除綁定</button>
                </div>
 
-               <div class="relative flex py-2 items-center">
-                   <div class="flex-grow border-t border-gray-300"></div>
-                   <span class="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold">時光機 (自動備份)</span>
-                   <div class="flex-grow border-t border-gray-300"></div>
-               </div>
                <div class="p-4 border border-green-200 rounded-lg bg-green-50">
                    <h3 class="font-bold text-green-900 mb-2">還原最近的自動備份</h3>
-                   <p class="text-xs text-green-700 mb-3 leading-relaxed">系統每日會自動在瀏覽器保留備份（最多保留 3 天）。若發生誤刪，可點擊下方紀錄救回資料。</p>
+                   <p class="text-xs text-green-700 mb-3 leading-relaxed">系統每日會自動在瀏覽器保留備份（最多保留 3 天）。</p>
                    <div id="auto-backup-list" class="space-y-2 max-h-32 overflow-y-auto"></div>
                </div>
 
-               <div class="relative flex py-2 items-center">
-                   <div class="flex-grow border-t border-gray-300"></div>
-                   <span class="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold">手動匯出與匯入</span>
-                   <div class="flex-grow border-t border-gray-300"></div>
-               </div>
                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                   <h3 class="font-bold text-gray-800 mb-3">匯出選擇範圍</h3>
-                   <div class="mb-4 space-y-2">
-                       <label class="flex items-center text-sm text-gray-700 cursor-pointer">
-                           <input type="checkbox" id="export-hw-chk" checked class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
-                           作業與班級名單
-                       </label>
-                       <label class="flex items-center text-sm text-gray-700 cursor-pointer">
-                           <input type="checkbox" id="export-types-chk" checked class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
-                           作業種類設定
-                       </label>
-                       <label class="flex items-center text-sm text-gray-700 cursor-pointer">
-                           <input type="checkbox" id="export-contact-chk" checked class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
-                           聯絡簿 (包含 30 天內記錄)
-                       </label>
-                   </div>
+                   <h3 class="font-bold text-gray-800 mb-3">手動匯出與還原</h3>
                    <button id="export-data-btn" class="w-full bg-cyan-600 text-white font-semibold py-2 px-4 rounded hover:bg-cyan-700 shadow transition-colors mb-4">下載為 JSON 檔</button>
-                   
-                   <h3 class="font-bold text-gray-800 mb-2 border-t pt-4">手動還原</h3>
-                   <p class="text-xs text-red-500 mb-3 font-medium">警告：這將覆蓋現有資料！</p>
                    <input type="file" id="import-file-input" accept=".json" class="hidden">
                    <button id="trigger-import-btn" class="w-full bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700 shadow transition-colors">選擇檔案並覆蓋還原</button>
                </div>
@@ -325,10 +283,10 @@
                     </div>
                     <div>
                         <label for="homework-missing-seats" class="block text-sm font-medium text-gray-700">缺號 (選填)</label>
-                        <input type="text" id="homework-missing-seats" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-base font-semibold" placeholder="例如: 4, 14">
+                        <input type="text" id="homework-missing-seats" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-base font-semibold" placeholder="例如: 15,16,20-25">
                     </div>
                 </div>
-                <p id="missing-seats-hint" class="text-xs text-gray-500 mt-1 leading-tight">※ 填寫的缺號將被直接排除於此作業名單中。<br>※ 自動載入此班級上次設定的座號與缺號。</p>
+                <p id="missing-seats-hint" class="text-xs text-gray-500 mt-1 leading-tight">※ 支援逗號隔開 (例: 1,3) 或連字號設定範圍 (例: 20-25)。<br>※ 填寫的缺號將被直接排除於名單中，並會自動記憶。</p>
 
                 <div class="flex justify-end space-x-4 pt-4">
                     <button type="button" class="cancel-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">取消</button>
@@ -356,13 +314,9 @@
     <div id="date-picker-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
         <div id="date-picker-content" class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm transform scale-95">
             <div class="flex items-center justify-between mb-4">
-                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
+                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition-colors">←</button>
                 <h3 id="current-month-year" class="text-lg font-bold"></h3>
-                <button id="next-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </button>
+                <button id="next-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition-colors">→</button>
             </div>
             <div class="grid grid-cols-7 gap-1 text-center text-sm text-gray-500 mb-2">
                 <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
@@ -370,27 +324,6 @@
             <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
             <div class="flex justify-end mt-6">
                 <button id="close-date-picker-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">關閉</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="all-done-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal z-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl p-8 w-full max-w-lg transform scale-95">
-            <h2 class="text-2xl font-bold mb-6">完成/已繳交名單</h2>
-            <div id="all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto"></div>
-            <div class="flex justify-end pt-6">
-                <button type="button" class="cancel-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">關閉</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="overall-all-done-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal z-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl p-8 w-full max-w-lg transform scale-95">
-            <h2 class="text-2xl font-bold mb-6">全勤學生名單</h2>
-            <p class="text-sm text-gray-500 mb-4">此處列出在所有作業中，狀態皆視為「已完成」的學生。</p>
-            <div id="overall-all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto"></div>
-            <div class="flex justify-end pt-6">
-                <button type="button" class="cancel-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">關閉</button>
             </div>
         </div>
     </div>
@@ -411,51 +344,26 @@
     </footer>
 
 <script>
-    // --- PWA 安裝邏輯 ---
     let deferredPrompt;
     const installBtn = document.getElementById('install-pwa-btn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
-        // 防止瀏覽器預設的安裝提示出現
         e.preventDefault();
-        // 儲存事件以便稍後觸發
         deferredPrompt = e;
-        // 顯示安裝按鈕
         if(installBtn) installBtn.classList.remove('hidden');
     });
 
     if(installBtn) {
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
-                // 顯示安裝提示
                 deferredPrompt.prompt();
-                // 等待使用者回應
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('使用者已同意安裝 PWA');
-                    installBtn.classList.add('hidden'); // 安裝後隱藏按鈕
-                } else {
-                    console.log('使用者拒絕安裝 PWA');
-                }
-                // 清除 prompt，因為它只能被使用一次
+                if (outcome === 'accepted') installBtn.classList.add('hidden');
                 deferredPrompt = null;
             }
         });
     }
 
-    // 註冊 Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            // 注意：這裡假設你已經將 sw.js 放到 GitHub 同個目錄下了
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                console.log('Service Worker 註冊成功');
-            }).catch(err => {
-                console.log('Service Worker 註冊失敗 或 尚未建立檔案', err);
-            });
-        });
-    }
-
-    // --- 預設常數與資料結構 ---
     const DEFAULT_TYPES = [
         {
             id: 'default',
@@ -465,14 +373,6 @@
                 { key: 'submitted', text: '已繳交', color: 'bg-blue-500', textColor: 'text-white', isCompleted: true },
                 { key: 'needs-correction', text: '待訂正', color: 'bg-yellow-500', textColor: 'text-white', isCompleted: false },
                 { key: 'completed', text: '已完成', color: 'bg-green-500', textColor: 'text-white', isCompleted: true }
-            ]
-        },
-        {
-            id: 'reading',
-            name: '閱讀作業',
-            statuses: [
-                { key: 'unread', text: '未閱讀', color: 'bg-gray-300', textColor: 'text-gray-800', isCompleted: false },
-                { key: 'read', text: '已閱讀', color: 'bg-green-500', textColor: 'text-white', isCompleted: true }
             ]
         }
     ];
@@ -486,22 +386,18 @@
         { class: 'bg-purple-500', textClass: 'text-white', name: '紫' }
     ];
 
-    let appData = {
-        classes: [],
-        homeworks: [],
-        homeworkTypes: JSON.parse(JSON.stringify(DEFAULT_TYPES))
-    };
-    
+    let appData = { classes: [], homeworks: [], homeworkTypes: JSON.parse(JSON.stringify(DEFAULT_TYPES)) };
     let currentClassId = localStorage.getItem('currentClassId') || null;
     let currentHomeworkId = null;
     let selectedDate = new Date();
     let calendarDate = new Date();
     let blackboardFontSize = 1.25;
     
-    // 頁面與捲動狀態管理
     let currentPage = 'main-page';
     let scrollPositions = {};
     let isSaving = false;
+    let saveTimeout = null;
+    let fileHandle = null;
 
     window.addEventListener('beforeunload', (e) => {
         if (isSaving) {
@@ -510,14 +406,10 @@
         }
     });
 
-    let fileHandle = null;
-
     function getDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('HomeworkAppLocalDB', 1);
-            request.onupgradeneeded = (e) => {
-                e.target.result.createObjectStore('settings');
-            };
+            request.onupgradeneeded = (e) => { e.target.result.createObjectStore('settings'); };
             request.onsuccess = (e) => resolve(e.target.result);
             request.onerror = (e) => reject(e.target.error);
         });
@@ -549,20 +441,15 @@
             const tx = db.transaction('settings', 'readwrite');
             tx.objectStore('settings').delete('fileHandle');
             tx.oncomplete = () => resolve();
-            tx.onerror = (e) => reject(e.target.error);
         });
     }
 
-    function generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
 
     function fixDates(dataObj) {
         if(dataObj.homeworks) {
             dataObj.homeworks.forEach(h => {
-                if (typeof h.createdAt === 'string') {
-                    h.createdAt = new Date(h.createdAt);
-                }
+                if (typeof h.createdAt === 'string') h.createdAt = new Date(h.createdAt);
             });
         }
     }
@@ -571,33 +458,36 @@
         const today = formatDate(new Date(), 'YYYY-MM-DD');
         const backupKey = `hw_backup_${today}`;
         localStorage.setItem(backupKey, JSON.stringify(appData));
-        
         const keys = Object.keys(localStorage).filter(k => k.startsWith('hw_backup_')).sort();
         if (keys.length > 3) {
-            const keysToDelete = keys.slice(0, keys.length - 3);
-            keysToDelete.forEach(k => localStorage.removeItem(k));
+            keys.slice(0, keys.length - 3).forEach(k => localStorage.removeItem(k));
         }
     }
 
-    async function saveData() {
-        if (isSaving) return;
+    // 🔥【優化】：加入防抖寫入機制 (Debounce + Queue) 防止連點丟失資料
+    function saveData() {
         isSaving = true;
-        try {
-            localStorage.setItem('homeworkAppData', JSON.stringify(appData));
-            runAutoBackup();
-            
-            if (fileHandle) {
-                if ((await fileHandle.queryPermission({ mode: 'readwrite' })) === 'granted') {
-                    const writable = await fileHandle.createWritable();
-                    await writable.write(JSON.stringify(appData));
-                    await writable.close();
+        return new Promise((resolve) => {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                try {
+                    localStorage.setItem('homeworkAppData', JSON.stringify(appData));
+                    runAutoBackup();
+                    if (fileHandle) {
+                        if ((await fileHandle.queryPermission({ mode: 'readwrite' })) === 'granted') {
+                            const writable = await fileHandle.createWritable();
+                            await writable.write(JSON.stringify(appData));
+                            await writable.close();
+                        }
+                    }
+                } catch (error) {
+                    console.error("無法寫入實體檔案:", error);
+                } finally {
+                    isSaving = false;
+                    resolve();
                 }
-            }
-        } catch (error) {
-            console.error("無法寫入實體檔案:", error);
-        } finally {
-            isSaving = false;
-        }
+            }, 300); // 延遲 300ms 批次寫入，確保連點不會出錯
+        });
     }
 
     async function syncFromFileHandle() {
@@ -614,7 +504,6 @@
             }
         } catch (e) {
             console.error("讀取本地檔案失敗:", e);
-            alert("讀取檔案失敗，可能是檔案已遺失或權限不足，系統將使用暫存資料。");
             await clearFileHandle();
             fileHandle = null;
             updateDataManagementUI();
@@ -626,9 +515,7 @@
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
-        if (format === 'YYYY-MM-DD') {
-            return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        }
+        if (format === 'YYYY-MM-DD') return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         return `${year}/${month}/${day}`;
     }
 
@@ -646,53 +533,47 @@
         document.getElementById('confirm-title').textContent = title;
         document.getElementById('confirm-message').textContent = message;
         openModal(document.getElementById('confirm-modal'));
-
         const confirmOk = document.getElementById('confirm-ok');
         const confirmCancel = document.getElementById('confirm-cancel');
-
-        const confirmHandler = () => {
-            onConfirm();
-            closeModal(document.getElementById('confirm-modal'));
-            cleanup();
-        };
-        const cancelHandler = () => {
-            closeModal(document.getElementById('confirm-modal'));
-            cleanup();
-        };
-        const cleanup = () => {
-            confirmOk.removeEventListener('click', confirmHandler);
-            confirmCancel.removeEventListener('click', cancelHandler);
-        };
-        confirmOk.addEventListener('click', confirmHandler);
-        confirmCancel.addEventListener('click', cancelHandler);
+        const cleanup = () => { confirmOk.replaceWith(confirmOk.cloneNode(true)); confirmCancel.replaceWith(confirmCancel.cloneNode(true)); };
+        
+        document.getElementById('confirm-ok').addEventListener('click', () => { onConfirm(); closeModal(document.getElementById('confirm-modal')); cleanup(); });
+        document.getElementById('confirm-cancel').addEventListener('click', () => { closeModal(document.getElementById('confirm-modal')); cleanup(); });
     }
 
-    function checkAndCleanupStorage() {
-        try {
-            if (!currentClassId || appData.classes.length === 0) return;
-            const currentClass = appData.classes.find(c => c.id === currentClassId);
-            if (!currentClass || !currentClass.contactBook) return;
+    // --- 【優化】精準 UI 渲染函式 ---
+    function updateSingleStudentUI(seat, oldStatusKey, newStatusKey, typeConfig) {
+        const btn = document.getElementById(`btn-seat-${seat}`);
+        if (!btn) return;
+        const oldStatus = typeConfig.statuses.find(s => s.key === oldStatusKey);
+        const newStatus = typeConfig.statuses.find(s => s.key === newStatusKey);
 
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const limitDateString = formatDate(thirtyDaysAgo, 'YYYY-MM-DD');
+        if (oldStatus && newStatus) {
+            btn.classList.remove(...oldStatus.color.split(' '), ...oldStatus.textColor.split(' '));
+            btn.classList.add(...newStatus.color.split(' '), ...newStatus.textColor.split(' '));
+            const textEl = btn.querySelector('.status-text');
+            if (textEl) textEl.textContent = newStatus.text;
+        }
+    }
 
-            let needsUpdate = false;
-            const newContactBook = {};
+    function updateSummaryUI(hw) {
+        const typeConfig = getHomeworkType(hw.typeId);
+        const statusCounts = {};
+        typeConfig.statuses.forEach(s => statusCounts[s.key] = 0);
+        hw.students.forEach(student => {
+            statusCounts[student.status] = (statusCounts[student.status] || 0) + 1;
+        });
 
-            for (const [dateStr, items] of Object.entries(currentClass.contactBook)) {
-                if (dateStr >= limitDateString) {
-                    newContactBook[dateStr] = items;
-                } else {
-                    needsUpdate = true; 
-                }
-            }
-            if (needsUpdate) {
-                currentClass.contactBook = newContactBook;
-                saveData();
-            }
-        } catch (error) {
-            console.error("Cleanup error handled:", error);
+        const summaryContainer = document.getElementById('status-summary');
+        if (summaryContainer) {
+            summaryContainer.innerHTML = '';
+            typeConfig.statuses.forEach(s => {
+                const count = statusCounts[s.key] || 0;
+                const summaryChip = document.createElement('div');
+                summaryChip.className = `flex items-center space-x-2 px-3 py-1 rounded-full ${s.color} ${s.textColor}`;
+                summaryChip.innerHTML = `<span>${s.text}</span><span class="font-bold">${count}</span>`;
+                summaryContainer.appendChild(summaryChip);
+            });
         }
     }
 
@@ -711,45 +592,17 @@
     function renderClassSelector() {
         const classSelector = document.getElementById('class-selector');
         if(!classSelector) return;
-        
         classSelector.innerHTML = '';
         if (appData.classes.length === 0) {
-            const option = document.createElement('option');
-            option.textContent = '請先建立班級';
-            classSelector.appendChild(option);
+            classSelector.appendChild(new Option('請先建立班級', ''));
             classSelector.disabled = true;
-            document.getElementById('show-add-modal-btn').disabled = true;
-            document.getElementById('student-details-btn').disabled = true;
-            document.getElementById('contact-book-btn').disabled = true;
             return;
         }
         classSelector.disabled = false;
-        document.getElementById('show-add-modal-btn').disabled = false;
-        document.getElementById('student-details-btn').disabled = false;
-        document.getElementById('contact-book-btn').disabled = false;
-
         appData.classes.forEach(c => {
-            const option = document.createElement('option');
-            option.value = c.id;
-            option.textContent = c.name;
+            const option = new Option(c.name, c.id);
             if (c.id === currentClassId) option.selected = true;
             classSelector.appendChild(option);
-        });
-    }
-
-    function renderClassList() {
-        const classListDiv = document.getElementById('class-list');
-        if(!classListDiv) return;
-        
-        classListDiv.innerHTML = '';
-        appData.classes.forEach(c => {
-            const classItem = document.createElement('div');
-            classItem.className = 'flex justify-between items-center p-2 bg-gray-100 rounded mb-2';
-            classItem.innerHTML = `
-                <span>${c.name}</span>
-                <button data-id="${c.id}" data-name="${c.name}" class="delete-class-btn text-red-500 hover:text-red-700 font-bold px-2">&times;</button>
-            `;
-            classListDiv.appendChild(classItem);
         });
     }
 
@@ -758,79 +611,35 @@
         if (!homeworkList) return;
         
         let filteredHomeworks = appData.homeworks.filter(hw => hw.classId === currentClassId);
-        const sortSelect = document.getElementById('sort-homework');
-        const sortMethod = sortSelect ? sortSelect.value : 'time';
-        
-        filteredHomeworks.sort((a, b) => {
-            if (sortMethod === 'time') {
-                if (!a.createdAt) return 1;
-                if (!b.createdAt) return -1;
-                return b.createdAt.getTime() - a.createdAt.getTime();
-            } else if (sortMethod === 'missing') {
-                const getMissing = (hw) => hw.students.filter(s => !isStudentCompleted(s, hw.typeId || 'default')).length;
-                return getMissing(b) - getMissing(a);
-            }
-            return 0;
-        });
-
+        filteredHomeworks.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         homeworkList.innerHTML = '';
         
         if (filteredHomeworks.length === 0) {
-            homeworkList.innerHTML = '<p id="empty-homework-message" class="text-center text-gray-500 py-8">目前沒有作業，請點擊右上角新增。</p>';
+            homeworkList.innerHTML = '<p class="text-center text-gray-500 py-8">目前沒有作業，請點擊新增。</p>';
         } else {
             filteredHomeworks.forEach(hw => {
-                const typeId = hw.typeId || 'default';
-                const typeConfig = getHomeworkType(typeId);
+                const typeConfig = getHomeworkType(hw.typeId);
+                const statusCounts = hw.students.reduce((acc, student) => { acc[student.status] = (acc[student.status] || 0) + 1; return acc; }, {});
+                const completedCount = hw.students.filter(s => isStudentCompleted(s, hw.typeId)).length;
                 
-                const statusCounts = hw.students.reduce((acc, student) => {
-                    acc[student.status] = (acc[student.status] || 0) + 1;
-                    return acc;
-                }, {});
-
-                const completedCount = hw.students.filter(s => isStudentCompleted(s, typeId)).length;
-                
-                let summaryHtml = '';
-                if (completedCount === hw.students.length && hw.students.length > 0) {
-                    summaryHtml = `<div class="text-green-600 font-bold">🎉 全班完成</div>`;
-                } else {
-                    summaryHtml = typeConfig.statuses
-                        .filter(s => statusCounts[s.key] > 0)
-                        .map(s => {
-                            let textClass = 'text-gray-600';
-                            if(s.color.includes('blue')) textClass = 'text-blue-600';
-                            else if(s.color.includes('green')) textClass = 'text-green-600';
-                            else if(s.color.includes('yellow')) textClass = 'text-yellow-600';
-                            else if(s.color.includes('red')) textClass = 'text-red-600';
-                            else if(s.color.includes('purple')) textClass = 'text-purple-600';
-
-                            return `<span class="mr-4 inline-flex items-center font-medium ${textClass}">${s.text}: <span class="font-bold ml-1">${statusCounts[s.key]}</span></span>`;
-                        }).join('');
-                }
+                let summaryHtml = completedCount === hw.students.length && hw.students.length > 0 
+                    ? `<div class="text-green-600 font-bold">🎉 全班完成</div>`
+                    : typeConfig.statuses.filter(s => statusCounts[s.key] > 0).map(s => `<span class="mr-4 inline-flex items-center font-medium text-gray-600">${s.text}: <span class="font-bold ml-1">${statusCounts[s.key]}</span></span>`).join('');
 
                 const hwItem = document.createElement('div');
                 hwItem.className = 'bg-white rounded-lg shadow-md p-4 cursor-pointer hover:shadow-lg transition-all active:scale-[0.98]';
-                hwItem.id = `hw-${hw.id}`; 
                 hwItem.dataset.id = hw.id;
-                
-                const createdDate = (hw.createdAt instanceof Date) ? hw.createdAt.toLocaleDateString('zh-TW') : 'N/A';
-                let studentCountText = `${hw.students.length} 人`;
-
                 hwItem.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div class="flex items-center gap-2 flex-grow min-w-0">
-                             <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full whitespace-nowrap">${typeConfig.name}</span>
+                            <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full whitespace-nowrap">${typeConfig.name}</span>
                             <h2 class="text-xl font-bold text-gray-800 truncate" title="${hw.name}">${hw.name}</h2>
-                            <button data-id="${hw.id}" class="edit-hw-btn text-gray-400 hover:text-indigo-500 p-1 rounded-full flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                            </button>
                         </div>
-                         <button data-id="${hw.id}" class="delete-hw-btn text-gray-400 hover:text-red-500 p-1 rounded-full flex-shrink-0 ml-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
-                         </button>
+                        <button data-id="${hw.id}" class="delete-hw-btn text-gray-400 hover:text-red-500 p-1 rounded-full flex-shrink-0 ml-2">&times;</button>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
-                        <span>${studentCountText}</span>
-                        <span>${createdDate}</span>
+                        <span>${hw.students.length} 人</span>
+                        <span>${hw.createdAt.toLocaleDateString('zh-TW')}</span>
                     </div>
                     <div class="mt-3 text-sm">${summaryHtml}</div>
                 `;
@@ -839,6 +648,7 @@
         }
     }
 
+    // --- 【重構】避免整個重繪的 renderStudentGrid ---
     function renderStudentGrid(homeworkId) {
         const studentGrid = document.getElementById('student-grid');
         if(!studentGrid) return;
@@ -850,1322 +660,227 @@
         document.getElementById('detail-homework-name').textContent = hw.name;
         studentGrid.innerHTML = '';
         
-        // --- 核心：計算最佳排版 Cols，動態填滿畫面，保留空隙，確保正方形且不捲動 ---
         const containerWidth = studentGrid.parentElement.clientWidth - 32; 
-        const headerHeight = document.querySelector('#detail-page header').offsetHeight || 150;
-        const availableHeight = Math.max(window.innerHeight - headerHeight - 80, 200); 
-        
+        const availableHeight = Math.max(window.innerHeight - 230, 200); 
         const count = hw.students.length;
-        let bestCols = 1;
-        let bestBoxSize = 0;
-
-        for (let c = 1; c <= count; c++) {
-            const r = Math.ceil(count / c);
-            const gap = window.innerWidth < 640 ? 8 : 12; 
-            
-            const sizeW = (containerWidth - (c - 1) * gap) / c;
-            const sizeH = (availableHeight - (r - 1) * gap) / r;
-            const size = Math.min(sizeW, sizeH, 160); 
-            
-            if (size > bestBoxSize) {
-                bestBoxSize = size;
-                bestCols = c;
-            }
-        }
         
-        if (bestCols < 1) bestCols = 1;
+        let bestCols = 1, bestBoxSize = 0;
+        for (let c = 1; c <= count; c++) {
+            const gap = window.innerWidth < 640 ? 8 : 12; 
+            const sizeW = (containerWidth - (c - 1) * gap) / c;
+            const sizeH = (availableHeight - (Math.ceil(count / c) - 1) * gap) / Math.ceil(count / c);
+            const size = Math.min(sizeW, sizeH, 160); 
+            if (size > bestBoxSize) { bestBoxSize = size; bestCols = c; }
+        }
         
         const gap = window.innerWidth < 640 ? 8 : 12;
         studentGrid.className = `grid mx-auto`;
         studentGrid.style.gap = `${gap}px`;
         studentGrid.style.gridTemplateColumns = `repeat(${bestCols}, 1fr)`;
-        
-        const finalWidth = Math.floor(bestCols * bestBoxSize + (bestCols - 1) * gap);
-        studentGrid.style.width = `${finalWidth}px`;
-        studentGrid.style.maxWidth = '100%';
+        studentGrid.style.width = `${Math.floor(bestCols * bestBoxSize + (bestCols - 1) * gap)}px`;
 
-        const typeId = hw.typeId || 'default';
-        const typeConfig = getHomeworkType(typeId);
-
+        const typeConfig = getHomeworkType(hw.typeId);
         const batchSelect = document.getElementById('batch-status-select');
-        if (batchSelect && (batchSelect.options.length === 0 || batchSelect.dataset.typeId !== typeId)) {
+        if (batchSelect) {
             batchSelect.innerHTML = '';
-            batchSelect.dataset.typeId = typeId;
-            typeConfig.statuses.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.key;
-                opt.textContent = s.text;
-                batchSelect.appendChild(opt);
-            });
+            typeConfig.statuses.forEach(s => batchSelect.appendChild(new Option(s.text, s.key)));
         }
 
-        const statusCounts = {};
-        typeConfig.statuses.forEach(s => statusCounts[s.key] = 0);
-
         hw.students.forEach(student => {
-            let statusInfo = typeConfig.statuses.find(s => s.key === student.status);
-            if (!statusInfo) {
-                statusInfo = typeConfig.statuses[0];
-                student.status = statusInfo.key; 
-            }
-            statusCounts[student.status] = (statusCounts[student.status] || 0) + 1;
-            
+            let statusInfo = typeConfig.statuses.find(s => s.key === student.status) || typeConfig.statuses[0];
             const studentBtn = document.createElement('button');
+            // 加入 ID 為了局部更新
+            studentBtn.id = `btn-seat-${student.seat}`;
             studentBtn.className = `student-btn rounded-xl shadow-sm text-center font-bold transition-all transform hover:scale-105 active:scale-95 ${statusInfo.color} ${statusInfo.textColor} flex flex-col items-center justify-center border-2 border-transparent aspect-square overflow-hidden cursor-pointer w-full h-full`;
             studentBtn.dataset.seat = student.seat;
             
-            // 進一步調降字體比例，讓畫面更精緻和諧
             const fontSizeNum = Math.max(12, bestBoxSize * 0.28); 
             const fontSizeText = Math.max(9, bestBoxSize * 0.12); 
             
+            // 包裝 class 為了局部更新 textContent
             studentBtn.innerHTML = `
                 <span class="font-black leading-none tracking-tighter" style="font-size: ${fontSizeNum}px; pointer-events: none;">${student.seat}</span>
-                <span class="font-bold leading-tight mt-1 opacity-90 truncate w-full px-1" style="font-size: ${fontSizeText}px; pointer-events: none;">${statusInfo.text}</span>
+                <span class="status-text font-bold leading-tight mt-1 opacity-90 truncate w-full px-1" style="font-size: ${fontSizeText}px; pointer-events: none;">${statusInfo.text}</span>
             `;
             studentGrid.appendChild(studentBtn);
         });
 
-        const summaryContainer = document.getElementById('status-summary');
-        if(summaryContainer) {
-            summaryContainer.innerHTML = '';
-            typeConfig.statuses.forEach(s => {
-                const count = statusCounts[s.key] || 0;
-                const summaryChip = document.createElement('div');
-                summaryChip.className = `flex items-center space-x-2 px-3 py-1 rounded-full ${s.color} ${s.textColor}`;
-                summaryChip.innerHTML = `<span>${s.text}</span><span class="font-bold">${count}</span>`;
-                summaryContainer.appendChild(summaryChip);
-            });
-        }
+        updateSummaryUI(hw);
     }
 
-    function renderStudentDetailsPage() {
-        const studentDetailsList = document.getElementById('student-details-list');
-        if(!studentDetailsList) return;
-        
-        studentDetailsList.innerHTML = '';
-        const filteredHomeworks = appData.homeworks.filter(hw => hw.classId === currentClassId);
-
-        if(filteredHomeworks.length === 0) {
-            studentDetailsList.innerHTML = '<p class="text-center text-gray-500 py-8">這個班級還沒有任何作業。</p>';
-            return;
-        }
-
-        const studentData = [];
-        let maxStudentCount = 0;
-        filteredHomeworks.forEach(hw => {
-            hw.students.forEach(s => {
-                maxStudentCount = Math.max(maxStudentCount, s.seat);
-            });
-        });
-
-        if (maxStudentCount === 0) {
-             studentDetailsList.innerHTML = '<p class="text-center text-gray-500 py-8">這個班級還沒有任何學生。</p>';
-            return;
-        }
-        
-        for (let i = 1; i <= maxStudentCount; i++) {
-            const issues = [];
-            let isExistsInAnyHw = false;
-
-            filteredHomeworks.forEach(hw => {
-                const typeId = hw.typeId || 'default';
-                const student = hw.students.find(s => s.seat === i);
-                if (student) {
-                    isExistsInAnyHw = true;
-                    if (!isStudentCompleted(student, typeId)) {
-                        const typeConfig = getHomeworkType(typeId);
-                        const statusInfo = typeConfig.statuses.find(s => s.key === student.status) || typeConfig.statuses[0];
-                        issues.push({ 
-                            hwName: hw.name, 
-                            hwId: hw.id, 
-                            statusText: statusInfo.text,
-                            colorClass: statusInfo.textColor.includes('white') ? statusInfo.color.replace('bg-', 'text-') : 'text-gray-600'
-                        });
-                    }
-                }
-            });
-            if(isExistsInAnyHw) {
-                studentData.push({ seat: i, issues });
-            }
-        }
-
-        const sortSelect = document.getElementById('sort-student-detail');
-        const sortMethod = sortSelect ? sortSelect.value : 'number';
-        
-        studentData.sort((a, b) => {
-            if (sortMethod === 'number') return a.seat - b.seat;
-            if (sortMethod === 'missing') return b.issues.length - a.issues.length;
-            return 0;
-        });
-
-        let hasIssues = false;
-        studentData.forEach(data => {
-            if (data.issues.length === 0) return;
-            hasIssues = true;
-            const studentCard = document.createElement('div');
-            studentCard.className = 'bg-white rounded-lg shadow-md p-4';
-            
-            const issuesHtml = data.issues.map(issue => 
-                `<span class="mr-2 inline-block"><span class="homework-link font-medium ${issue.colorClass}" data-id="${issue.hwId}">${issue.hwName}</span> <span class="text-xs text-gray-400">(${issue.statusText})</span></span>`
-            ).join('、 ');
-
-            studentCard.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 flex justify-between">
-                    <span>${data.seat} 號</span>
-                    <span class="text-sm font-normal text-red-500">未完成: ${data.issues.length}</span>
-                </h3>
-                <div class="mt-2 text-sm leading-relaxed">${issuesHtml}</div>
-            `;
-            studentDetailsList.appendChild(studentCard);
-        });
-        
-        if(!hasIssues) {
-             studentDetailsList.innerHTML = '<p class="text-center text-green-600 font-bold py-8">🎉 太棒了！所有學生都已完成所有作業！</p>';
-        }
-    }
-    
-    function renderHomeworkTypesPage() {
-        const list = document.getElementById('types-list');
-        if(!list) return;
-        
-        list.innerHTML = '';
-        appData.homeworkTypes.forEach((type, typeIndex) => {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow p-6 border border-gray-200';
-            
-            const statusesHtml = type.statuses.map((status, statusIndex) => {
-                return `
-                    <div class="flex items-center gap-2 mb-2">
-                        <div class="color-dot ${status.color}" data-type-index="${typeIndex}" data-status-index="${statusIndex}" title="點擊切換顏色"></div>
-                        <input type="text" class="status-name-input border-b border-gray-300 focus:outline-none focus:border-indigo-500 px-1 py-0.5 w-24 text-sm text-base" value="${status.text}" data-type-index="${typeIndex}" data-status-index="${statusIndex}">
-                        <label class="flex items-center text-xs text-gray-500 cursor-pointer select-none" title="是否算作已完成/已繳交">
-                            <input type="checkbox" class="mr-1 is-completed-check" ${status.isCompleted ? 'checked' : ''} data-type-index="${typeIndex}" data-status-index="${statusIndex}">
-                            完成
-                        </label>
-                        <button class="delete-status-btn text-gray-400 hover:text-red-500" data-type-index="${typeIndex}" data-status-index="${statusIndex}">&times;</button>
-                    </div>
-                `;
-            }).join('');
-
-            card.innerHTML = `
-                <div class="flex justify-between items-center mb-4 gap-2">
-                    <input type="text" class="type-name-input text-xl font-bold text-gray-800 border-b border-gray-300 focus:outline-none focus:border-indigo-500 bg-transparent w-full" value="${type.name}" data-type-index="${typeIndex}">
-                    <button class="delete-type-btn text-red-500 hover:text-red-700 text-sm whitespace-nowrap" data-type-index="${typeIndex}" ${type.id === 'default' ? 'disabled style="opacity:0.3"' : ''}>刪除種類</button>
-                </div>
-                <div class="space-y-2 mb-4">
-                    ${statusesHtml}
-                </div>
-                <button class="add-status-btn w-full py-2 border border-dashed border-gray-300 text-gray-500 rounded hover:bg-gray-50 text-sm" data-type-index="${typeIndex}">+ 新增狀態</button>
-            `;
-            list.appendChild(card);
-        });
-    }
-
-    function renderContactBookItems() {
-        const blackboard = document.getElementById('blackboard-content');
-        if(!blackboard) return;
-        
-        blackboard.innerHTML = '';
-        blackboard.style.fontSize = `${blackboardFontSize}rem`;
-        
-        if (!currentClassId) return;
-        const currentClass = appData.classes.find(c => c.id === currentClassId);
-        
-        const dateDisplay = document.getElementById('contact-book-date');
-        if(dateDisplay) dateDisplay.textContent = formatDate(selectedDate);
-        
-        const dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-        const items = currentClass?.contactBook?.[dateString] || [];
-
-        if (items.length === 0) {
-            blackboard.innerHTML = `<p class="text-gray-400">請在下方輸入第一項聯絡簿事項...</p>`;
-            return;
-        }
-
-        items.forEach((item, index) => {
-            const itemEl = document.createElement('div');
-            itemEl.className = 'flex items-center justify-between group p-2 rounded hover:bg-white/10';
-            itemEl.innerHTML = `
-                <div class="flex-grow">
-                    <span class="mr-3">${index + 1}.</span>
-                    <span>${item}</span>
-                </div>
-                <div class="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity ml-4 flex-shrink-0">
-                    <button class="to-hw-btn text-teal-300 hover:text-teal-100 font-bold" data-index="${index}" title="從此項目新增為作業">📖</button>
-                    <button class="edit-contact-btn text-yellow-300 hover:text-yellow-100 font-bold" data-index="${index}" title="編輯事項">✏️</button>
-                    <button class="delete-contact-item-btn text-red-400 hover:text-red-300 font-bold" data-index="${index}" title="刪除事項">&times;</button>
-                </div>
-            `;
-            blackboard.appendChild(itemEl);
-        });
-    }
-
-    function renderCalendar() {
-        const grid = document.getElementById('calendar-grid');
-        const monthYear = document.getElementById('current-month-year');
-        if(!grid || !monthYear) return;
-        
-        grid.innerHTML = '';
-
-        const year = calendarDate.getFullYear();
-        const month = calendarDate.getMonth();
-        
-        monthYear.textContent = `${year}年 ${month + 1}月`;
-        
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        for (let i = 0; i < firstDay; i++) {
-            grid.appendChild(document.createElement('div'));
-        }
-
-        const todayString = formatDate(new Date(), 'YYYY-MM-DD');
-        const selectedDateString = formatDate(selectedDate, 'YYYY-MM-DD');
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayEl = document.createElement('button');
-            dayEl.className = 'calendar-day h-10 w-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors';
-            dayEl.textContent = day;
-            dayEl.dataset.day = day;
-            
-            const currentDayString = formatDate(new Date(year, month, day), 'YYYY-MM-DD');
-            if (currentDayString === todayString) dayEl.classList.add('today');
-            if (currentDayString === selectedDateString) dayEl.classList.add('selected');
-            grid.appendChild(dayEl);
-        }
-    }
-
-    // --- 資料管理介面狀態更新 ---
-    function updateDataManagementUI() {
-        const statusText = document.getElementById('current-file-status');
-        const linkBtn = document.getElementById('link-file-btn');
-        const unlinkBtn = document.getElementById('unlink-file-btn');
-        const backupList = document.getElementById('auto-backup-list');
-        
-        if(!statusText) return;
-
-        if (fileHandle) {
-            statusText.innerHTML = `狀態：已綁定本地檔案 <br><span class="text-indigo-900 font-bold bg-indigo-100 px-2 py-1 rounded inline-block mt-2">📄 ${fileHandle.name}</span>`;
-            linkBtn.textContent = "更改綁定檔案";
-            unlinkBtn.classList.remove('hidden');
-        } else {
-            statusText.textContent = "狀態：未綁定本地檔案 (資料僅存在瀏覽器)";
-            statusText.className = "text-sm text-indigo-700 mb-4 font-medium leading-relaxed";
-            linkBtn.textContent = "建立 / 綁定本地儲存檔案";
-            unlinkBtn.classList.add('hidden');
-        }
-        
-        if (!window.showSaveFilePicker) {
-            statusText.textContent = "狀態：您的瀏覽器不支援自動寫入本地檔案，請使用下方手動備份。";
-            statusText.className = "text-sm text-red-600 mb-4 font-medium leading-relaxed";
-            linkBtn.classList.add('hidden');
-            unlinkBtn.classList.add('hidden');
-        }
-
-        if(backupList) {
-            backupList.innerHTML = '';
-            const keys = Object.keys(localStorage).filter(k => k.startsWith('hw_backup_')).sort().reverse();
-            if (keys.length === 0) {
-                backupList.innerHTML = '<p class="text-sm text-gray-500">目前沒有自動備份紀錄。</p>';
-            } else {
-                keys.forEach(k => {
-                    const dateStr = k.replace('hw_backup_', '');
-                    const btn = document.createElement('button');
-                    btn.className = 'w-full bg-white border border-green-300 text-green-700 text-sm font-semibold py-2 px-3 rounded hover:bg-green-100 transition-colors flex justify-between items-center';
-                    btn.innerHTML = `<span>📅 備份時間：${dateStr}</span> <span class="bg-green-600 text-white px-2 py-0.5 rounded text-xs">還原</span>`;
-                    btn.onclick = () => {
-                        showConfirmModal('時光機還原', `確定要將所有資料還原至 ${dateStr} 的狀態嗎？目前的資料將會被覆蓋！`, async () => {
-                            const dataStr = localStorage.getItem(k);
-                            if (dataStr) {
-                                appData = JSON.parse(dataStr);
-                                fixDates(appData);
-                                await saveData();
-                                closeModal(document.getElementById('data-management-modal'));
-                                alert(`✅ 成功還原至 ${dateStr} 的備份資料！`);
-                                window.location.reload();
-                            }
-                        });
-                    };
-                    backupList.appendChild(btn);
-                });
-            }
-        }
-    }
-
-    // --- 安全的頁面與捲動切換機制 ---
+    // 頁面與歷史 API 控制
     function pushPageState(stateObj, hash) {
-        try {
-            if (history.state && history.state.page === stateObj.page && history.state.id === stateObj.id) return;
-            history.pushState(stateObj, '', hash);
-        } catch (e) {
-            console.warn("無法存取 History API (可能處於沙盒環境):", e);
-        }
+        try { if (!history.state || history.state.page !== stateObj.page) history.pushState(stateObj, '', hash); } catch(e) {}
     }
 
     function hideAllPages() {
-        // 儲存切換前的滾動位置
-        if (currentPage) {
-            scrollPositions[currentPage] = window.scrollY || document.documentElement.scrollTop;
-        }
-
-        const pages = ['main-page', 'detail-page', 'student-details-page', 'contact-book-page', 'homework-types-page'];
-        pages.forEach(id => {
+        ['main-page', 'detail-page', 'student-details-page', 'contact-book-page', 'homework-types-page'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('hidden');
-                el.classList.remove('block');
-            }
-        });
-    }
-
-    function restoreScroll(targetPageId) {
-        currentPage = targetPageId;
-        window.scrollTo({
-            top: scrollPositions[targetPageId] || 0,
-            behavior: 'auto'
+            if (el) el.classList.add('hidden');
         });
     }
 
     function showMainPage(fromHistory = false) {
-        try {
-            hideAllPages();
-            const mainPageEl = document.getElementById('main-page');
-            if (mainPageEl) mainPageEl.classList.remove('hidden');
-
-            if (!fromHistory) pushPageState({ page: 'main' }, '#main');
-            
-            checkAndCleanupStorage();
-            updateTypeSelects(); 
-            renderClassSelector();
-            renderHomeworkList();
-            currentHomeworkId = null;
-            
-            // 返回時清除標記並恢復位置
-            document.getElementById('detail-page').dataset.from = '';
-            restoreScroll('main-page');
-        } catch (e) {
-            console.error("顯示主畫面時發生錯誤:", e);
-        }
+        hideAllPages();
+        document.getElementById('main-page').classList.remove('hidden');
+        if (!fromHistory) pushPageState({ page: 'main' }, '#main');
+        renderClassSelector();
+        renderHomeworkList();
+        currentHomeworkId = null;
     }
 
     function showDetailPage(homeworkId, fromHistory = false) {
-        try {
-            hideAllPages();
-            const detailPageEl = document.getElementById('detail-page');
-            if (detailPageEl) detailPageEl.classList.remove('hidden');
-
-            if (!fromHistory) pushPageState({ page: 'detail', id: homeworkId }, '#detail');
-            renderStudentGrid(homeworkId);
-            restoreScroll('detail-page');
-        } catch (e) {
-            console.error("顯示詳細頁面時發生錯誤:", e);
-        }
+        hideAllPages();
+        document.getElementById('detail-page').classList.remove('hidden');
+        if (!fromHistory) pushPageState({ page: 'detail', id: homeworkId }, '#detail');
+        renderStudentGrid(homeworkId);
     }
 
-    function showStudentDetailsPage(fromHistory = false) {
-        try {
-            hideAllPages();
-            const studentPageEl = document.getElementById('student-details-page');
-            if (studentPageEl) studentPageEl.classList.remove('hidden');
-
-            if (!fromHistory) pushPageState({ page: 'student-details' }, '#student-details');
-            renderStudentDetailsPage();
-            restoreScroll('student-details-page');
-        } catch (e) {
-            console.error("顯示學生詳情時發生錯誤:", e);
-        }
-    }
-
-    function showContactBookPage(fromHistory = false) {
-        try {
-            hideAllPages();
-            const contactPageEl = document.getElementById('contact-book-page');
-            if (contactPageEl) contactPageEl.classList.remove('hidden');
-
-            if (!fromHistory) pushPageState({ page: 'contact-book' }, '#contact-book');
-            selectedDate = new Date();
-            const currentClass = appData.classes.find(c => c.id === currentClassId);
-            const titleEl = document.getElementById('contact-book-title');
-            if (titleEl) titleEl.textContent = `${currentClass?.name || ''} 聯絡簿`;
-            renderContactBookItems();
-            restoreScroll('contact-book-page');
-        } catch (e) {
-            console.error("顯示聯絡簿時發生錯誤:", e);
-        }
-    }
-
-    function showHomeworkTypesPage(fromHistory = false) {
-        try {
-            hideAllPages();
-            const typePageEl = document.getElementById('homework-types-page');
-            if (typePageEl) typePageEl.classList.remove('hidden');
-
-            if (!fromHistory) pushPageState({ page: 'homework-types' }, '#homework-types');
-            renderHomeworkTypesPage();
-            restoreScroll('homework-types-page');
-        } catch (e) {
-            console.error("顯示作業種類設定時發生錯誤:", e);
-        }
-    }
-
-    window.addEventListener('popstate', (e) => {
-        document.querySelectorAll('.modal:not(.hidden)').forEach(modal => closeModal(modal));
-        const state = e.state;
-        if (!state || state.page === 'main') showMainPage(true);
-        else if (state.page === 'detail') showDetailPage(state.id, true);
-        else if (state.page === 'student-details') showStudentDetailsPage(true);
-        else if (state.page === 'contact-book') showContactBookPage(true);
-        else if (state.page === 'homework-types') showHomeworkTypesPage(true);
-    });
-
-    // --- Modal 控制 ---
     function openModal(modal) {
         if(!modal) return;
         modal.classList.remove('hidden');
         setTimeout(() => {
              modal.classList.remove('opacity-0');
-             const content = modal.querySelector('.modal-content, .confirm-modal-content, #date-picker-content');
-             if(content) content.classList.remove('scale-95');
+             modal.querySelector('.modal-content, .confirm-modal-content, #date-picker-content')?.classList.remove('scale-95');
         }, 10);
     }
     
     function closeModal(modal) {
         if(!modal) return;
         modal.classList.add('opacity-0');
-        const content = modal.querySelector('.modal-content, .confirm-modal-content, #date-picker-content');
-        if(content) content.classList.add('scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            const form = modal.querySelector('form');
-            if(form) form.reset();
-        }, 200); 
+        modal.querySelector('.modal-content, .confirm-modal-content, #date-picker-content')?.classList.add('scale-95');
+        setTimeout(() => { modal.classList.add('hidden'); modal.querySelector('form')?.reset(); }, 200); 
     }
 
-    function fullRender() {
-        updateTypeSelects();
-        renderClassSelector();
-        renderClassList();
-        renderHomeworkList();
-    }
-    
-    // --- 按鈕點擊綁定 ---
+    // --- 綁定事件與局部更新核心 ---
     function setupButtonEvents() {
-        const bindClick = (id, handler) => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('click', handler);
-        };
-
-        bindClick('intro-btn', () => openModal(document.getElementById('intro-modal')));
-
-        bindClick('show-add-modal-btn', () => {
-            const modal = document.getElementById('add-homework-modal');
-            document.getElementById('homework-modal-title').textContent = '新增作業';
-            modal.querySelector('form').reset();
-            document.getElementById('edit-homework-id').value = '';
-            
-            document.getElementById('student-count-container').style.display = 'grid';
-            document.getElementById('homework-type-container').style.display = 'block';
-            document.getElementById('missing-seats-hint').style.display = 'block';
-            
-            updateTypeSelects(); 
-            
-            // 讀取該班級專屬儲存的最後座號與缺號設定
-            if (currentClassId) {
-                const currentClass = appData.classes.find(c => c.id === currentClassId);
-                if (currentClass && currentClass.lastMaxSeat) {
-                    document.getElementById('student-count').value = currentClass.lastMaxSeat;
-                    document.getElementById('homework-missing-seats').value = currentClass.lastMissingSeats || '';
-                } else {
-                    const classHws = appData.homeworks.filter(h => h.classId === currentClassId);
-                    if (classHws.length > 0) {
-                         let maxSeat = 0;
-                         classHws[classHws.length-1].students.forEach(s => maxSeat = Math.max(maxSeat, s.seat));
-                         document.getElementById('student-count').value = maxSeat || 30;
-                    } else {
-                         document.getElementById('student-count').value = 30;
-                    }
-                    document.getElementById('homework-missing-seats').value = '';
-                }
-            }
-            openModal(modal);
+        document.getElementById('intro-btn')?.addEventListener('click', () => openModal(document.getElementById('intro-modal')));
+        document.getElementById('show-add-modal-btn')?.addEventListener('click', () => {
+            openModal(document.getElementById('add-homework-modal'));
+            updateTypeSelects();
         });
+        document.getElementById('back-to-main-btn')?.addEventListener('click', () => showMainPage());
 
-        bindClick('manage-classes-btn', () => openModal(document.getElementById('manage-classes-modal')));
-        bindClick('student-details-btn', () => showStudentDetailsPage());
-        bindClick('contact-book-btn', () => showContactBookPage());
-        bindClick('show-types-modal-btn', () => showHomeworkTypesPage());
-        
-        bindClick('data-management-btn', () => {
-            updateDataManagementUI();
-            openModal(document.getElementById('data-management-modal'));
-        });
+        // 🔥 【優化】避免全頁閃爍的精準更新
+        document.getElementById('student-grid')?.addEventListener('click', async (e) => {
+            const studentBtn = e.target.closest('.student-btn');
+            if (studentBtn) {
+                const seat = parseInt(studentBtn.dataset.seat);
+                const hw = appData.homeworks.find(h => h.id === currentHomeworkId);
+                if (!hw) return;
+                
+                const studentIndex = hw.students.findIndex(s => s.seat === seat);
+                if (studentIndex === -1) return;
+                
+                const student = hw.students[studentIndex];
+                const typeConfig = getHomeworkType(hw.typeId);
+                
+                let currentIndex = typeConfig.statuses.findIndex(s => s.key === student.status);
+                if(currentIndex === -1) currentIndex = 0;
 
-        // 動態判斷返回位置 (從哪裡來就退回哪裡)
-        bindClick('back-to-main-btn', () => {
-            const detailPage = document.getElementById('detail-page');
-            if (detailPage && detailPage.dataset.from === 'student-details-page') {
-                showStudentDetailsPage();
-                detailPage.dataset.from = ''; // reset
-            } else {
-                showMainPage();
+                const nextIndex = (currentIndex + 1) % typeConfig.statuses.length;
+                const oldStatus = student.status;
+                const newStatus = typeConfig.statuses[nextIndex].key;
+                
+                // 1. 更新記憶體資料
+                hw.students[studentIndex].status = newStatus;
+                
+                // 2. 🔥 精準局部更新 UI (不刪除 DOM，無閃爍！)
+                updateSingleStudentUI(seat, oldStatus, newStatus, typeConfig);
+                updateSummaryUI(hw);
+                
+                // 3. 防抖寫入 (Debounce)
+                saveData();
             }
         });
-        
-        bindClick('back-from-student-details-btn', () => showMainPage());
-        bindClick('back-from-contact-book-btn', () => showMainPage());
-        bindClick('back-from-types-btn', () => showMainPage());
-
-        bindClick('show-all-done-btn', () => {
-            if (!currentHomeworkId) return;
-            const hw = appData.homeworks.find(h => h.id === currentHomeworkId);
-            if (!hw) return;
-            const typeId = hw.typeId || 'default';
-            const doneStudents = hw.students.filter(s => isStudentCompleted(s, typeId));
-            renderAllDoneList(doneStudents, 'all-done-list');
-            openModal(document.getElementById('all-done-modal'));
-        });
-
-        bindClick('show-overall-all-done-btn', () => {
-            const filteredHomeworks = appData.homeworks.filter(hw => hw.classId === currentClassId);
-            if (filteredHomeworks.length === 0) {
-                renderAllDoneList([], 'overall-all-done-list');
-                openModal(document.getElementById('overall-all-done-modal'));
-                return;
-            }
-            const problematicStudents = new Set();
-            let maxStudentCount = 0;
-            filteredHomeworks.forEach(hw => {
-                const typeId = hw.typeId || 'default';
-                hw.students.forEach(student => {
-                    maxStudentCount = Math.max(maxStudentCount, student.seat);
-                    if (!isStudentCompleted(student, typeId)) {
-                        problematicStudents.add(student.seat);
-                    }
-                });
-            });
-            const allDoneStudents = [];
-            for (let i = 1; i <= maxStudentCount; i++) {
-                const exists = filteredHomeworks.some(h => h.students.find(s => s.seat === i));
-                if (exists && !problematicStudents.has(i)) {
-                    allDoneStudents.push(i);
-                }
-            }
-            renderAllDoneList(allDoneStudents, 'overall-all-done-list');
-            openModal(document.getElementById('overall-all-done-modal'));
-        });
-
-        // 綁定作業方格的點擊事件 (修復無法改變狀態的 Bug)
-        const studentGrid = document.getElementById('student-grid');
-        if (studentGrid) {
-            studentGrid.addEventListener('click', async (e) => {
-                const studentBtn = e.target.closest('.student-btn');
-                if (studentBtn) {
-                    const seat = parseInt(studentBtn.dataset.seat);
-                    const hw = appData.homeworks.find(h => h.id === currentHomeworkId);
-                    if (!hw) return;
-                    const studentIndex = hw.students.findIndex(s => s.seat === seat);
-                    if (studentIndex === -1) return;
-                    
-                    const student = hw.students[studentIndex];
-                    const typeConfig = getHomeworkType(hw.typeId);
-                    
-                    let currentIndex = typeConfig.statuses.findIndex(s => s.key === student.status);
-                    if(currentIndex === -1) currentIndex = 0;
-
-                    const nextIndex = (currentIndex + 1) % typeConfig.statuses.length;
-                    const newStatus = typeConfig.statuses[nextIndex].key;
-                    
-                    hw.students[studentIndex].status = newStatus;
-                    
-                    renderStudentGrid(currentHomeworkId); 
-                    await saveData();
-                }
-            });
-        }
     }
 
-    // --- 本地檔案綁定功能 ---
-    const linkFileBtn = document.getElementById('link-file-btn');
-    if(linkFileBtn) linkFileBtn.addEventListener('click', async () => {
-        try {
-            if (!window.showSaveFilePicker) throw new Error("您的瀏覽器不支援此功能");
-            const handle = await window.showSaveFilePicker({
-                suggestedName: '作業點收資料.json',
-                types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }]
-            });
-            fileHandle = handle;
-            await saveFileHandle(handle);
-            
-            await syncFromFileHandle();
-            await saveData(); 
-            
-            document.getElementById('sync-banner').classList.add('hidden');
-            document.body.classList.remove('has-banner');
-            updateDataManagementUI();
-            fullRender();
-            alert("✅ 成功綁定檔案，系統將自動同步資料！");
-        } catch (e) {
-            if (e.name === 'AbortError') {
-                console.log("使用者取消選取");
-            } else {
-                alert("無法開啟檔案選擇器。\n\n若您在「預覽視窗」中執行，安全政策會阻擋此功能。請將本檔案下載並用瀏覽器直接開啟。\n\n錯誤細節：" + e.message);
-            }
-        }
-    });
-
-    const unlinkBtn = document.getElementById('unlink-file-btn');
-    if(unlinkBtn) unlinkBtn.addEventListener('click', async () => {
-        if(confirm("解除綁定後，資料只會存在瀏覽器記憶體中，確定要解除嗎？")) {
-            await clearFileHandle();
-            fileHandle = null;
-            updateDataManagementUI();
-        }
-    });
-
-    // --- 傳統備份還原事件 ---
-    const exportBtn = document.getElementById('export-data-btn');
-    if(exportBtn) exportBtn.addEventListener('click', () => {
-        const exportHw = document.getElementById('export-hw-chk').checked;
-        const exportTypes = document.getElementById('export-types-chk').checked;
-        const exportContact = document.getElementById('export-contact-chk').checked;
-
-        let exportData = JSON.parse(JSON.stringify(appData));
-
-        if (!exportHw) exportData.homeworks = [];
-        if (!exportTypes) exportData.homeworkTypes = DEFAULT_TYPES; 
-
-        if (!exportContact) {
-            exportData.classes.forEach(c => c.contactBook = {});
-        } else {
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const limitDateStr = formatDate(thirtyDaysAgo, 'YYYY-MM-DD');
-            exportData.classes.forEach(c => {
-                if (c.contactBook) {
-                    const filteredBook = {};
-                    for (const [date, items] of Object.entries(c.contactBook)) {
-                        if (date >= limitDateStr) filteredBook[date] = items;
-                    }
-                    c.contactBook = filteredBook;
-                }
-            });
-        }
-
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", `作業點收備份_${formatDate(new Date(), 'YYYY-MM-DD')}.json`);
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-        closeModal(document.getElementById('data-management-modal'));
-    });
-
-    const triggerImport = document.getElementById('trigger-import-btn');
-    if(triggerImport) triggerImport.addEventListener('click', () => {
-        document.getElementById('import-file-input').click();
-    });
-
-    const importInput = document.getElementById('import-file-input');
-    if(importInput) importInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(!data.classes || !data.homeworks || !data.homeworkTypes) throw new Error("無效的備份檔案格式");
-
-                showConfirmModal('匯入資料', '警告：這將會完全覆蓋當前瀏覽器中的所有班級與作業資料，確定要繼續嗎？', async () => {
-                     closeModal(document.getElementById('data-management-modal'));
-                     appData = data;
-                     fixDates(appData);
-                     await saveData();
-                     alert('✅ 匯入成功！系統將重新載入。');
-                     window.location.reload(); 
-                });
-            } catch(err) {
-                alert("讀取備份檔案失敗：" + err.message);
-            }
-        };
-        reader.readAsText(file);
-        e.target.value = ''; 
-    });
-
-    document.querySelectorAll('.cancel-btn, #close-warning-btn').forEach(btn => btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal'))));
-    
-    // --- 新增作業 (包含缺號邏輯與記憶功能) ---
-    const hwForm = document.getElementById('add-homework-form');
-    if(hwForm) hwForm.addEventListener('submit', async (e) => {
+    // --- 【優化】連續缺號 (範圍) 解析與新增作業 ---
+    document.getElementById('add-homework-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const editId = document.getElementById('edit-homework-id').value;
         const name = document.getElementById('homework-name').value.trim();
         const typeId = document.getElementById('homework-type-select').value;
-
-        closeModal(document.getElementById('add-homework-modal'));
-
-        if (editId) { 
-            const hw = appData.homeworks.find(h => h.id === editId);
-            if (hw && name) {
-                hw.name = name;
-                await saveData();
-                renderHomeworkList();
-            }
-        } else { 
-            const studentCount = parseInt(document.getElementById('student-count').value);
-            const missingInput = document.getElementById('homework-missing-seats').value;
-            const missingSeats = missingInput.replace(/，/g, ',').split(/[\s,]+/).map(s => parseInt(s.trim())).filter(s => !isNaN(s));
-
-            if (name && studentCount > 0 && currentClassId) {
-                const typeConfig = getHomeworkType(typeId);
-                const initialStatus = typeConfig.statuses[0].key; 
-                
-                const students = [];
-                for (let i = 1; i <= studentCount; i++) {
-                    if (!missingSeats.includes(i)) {
-                        students.push({ seat: i, status: initialStatus });
-                    }
+        const studentCount = parseInt(document.getElementById('student-count').value);
+        const missingInput = document.getElementById('homework-missing-seats').value;
+        
+        // 核心：支援 15,16,20-25 這種解析
+        let missingSeats = [];
+        const parts = missingInput.replace(/，/g, ',').split(/[\s,]+/);
+        for (let part of parts) {
+            part = part.trim();
+            if (!part) continue;
+            if (part.includes('-')) {
+                const [startStr, endStr] = part.split('-');
+                const start = parseInt(startStr), end = parseInt(endStr);
+                if (!isNaN(start) && !isNaN(end) && start <= end) {
+                    for (let i = start; i <= end; i++) missingSeats.push(i);
                 }
-
-                const newHomework = {
-                    id: generateId(),
-                    classId: currentClassId,
-                    name,
-                    studentCount: students.length,
-                    typeId,
-                    createdAt: new Date(),
-                    students: students
-                };
-                
-                // 記憶最後座號與缺號到 class 設定中
-                const currentClass = appData.classes.find(c => c.id === currentClassId);
-                if (currentClass) {
-                    currentClass.lastMaxSeat = studentCount;
-                    currentClass.lastMissingSeats = missingInput;
-                }
-
-                appData.homeworks.push(newHomework);
-                await saveData();
-                renderHomeworkList();
+            } else {
+                const num = parseInt(part);
+                if (!isNaN(num)) missingSeats.push(num);
             }
+        }
+
+        if (name && studentCount > 0 && currentClassId) {
+            const typeConfig = getHomeworkType(typeId);
+            const initialStatus = typeConfig.statuses[0].key; 
+            const students = [];
+            for (let i = 1; i <= studentCount; i++) {
+                if (!missingSeats.includes(i)) students.push({ seat: i, status: initialStatus });
+            }
+
+            appData.homeworks.push({
+                id: generateId(), classId: currentClassId, name, studentCount: students.length,
+                typeId, createdAt: new Date(), students: students
+            });
+            
+            await saveData();
+            closeModal(document.getElementById('add-homework-modal'));
+            renderHomeworkList();
         }
     });
 
-    // --- 全班一鍵變更 ---
-    const batchBtn = document.getElementById('batch-status-btn');
-    if(batchBtn) batchBtn.addEventListener('click', async () => {
+    document.getElementById('batch-status-btn')?.addEventListener('click', async () => {
         if (!currentHomeworkId) return;
         const targetStatus = document.getElementById('batch-status-select').value;
-        const statusText = document.querySelector('#batch-status-select option:checked').textContent;
         const hw = appData.homeworks.find(h => h.id === currentHomeworkId);
-        if (!hw) return;
-
-        showConfirmModal('全班一鍵變更', `確定要將當前作業所有的學生狀態變更為「${statusText}」嗎？`, async () => {
+        showConfirmModal('全班一鍵變更', `確定要將所有學生變更為該狀態嗎？`, async () => {
             hw.students.forEach(s => s.status = targetStatus);
-            renderStudentGrid(currentHomeworkId);
+            renderStudentGrid(currentHomeworkId); // 全班變更時做一次重繪是合理的
             await saveData();
         });
     });
 
-    // --- 作業種類頁面事件 ---
-    const newTypeBtn = document.getElementById('add-new-type-btn');
-    if(newTypeBtn) newTypeBtn.addEventListener('click', async () => {
-        const newType = {
-            id: `custom-${Date.now()}`,
-            name: '新作業種類',
-            statuses: [
-                { key: 's1', text: '未繳交', color: 'bg-gray-300', textColor: 'text-gray-800', isCompleted: false },
-                { key: 's2', text: '已完成', color: 'bg-green-500', textColor: 'text-white', isCompleted: true }
-            ]
-        };
-        appData.homeworkTypes.push(newType);
-        await saveData();
-        renderHomeworkTypesPage();
-    });
-
-    const typesList = document.getElementById('types-list');
-    if(typesList) {
-        typesList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('delete-type-btn')) {
-                const idx = parseInt(e.target.dataset.typeIndex);
-                if (appData.homeworkTypes[idx].id === 'default') return; 
-                if (confirm('確定刪除此作業種類？')) {
-                    appData.homeworkTypes.splice(idx, 1);
-                    await saveData();
-                    renderHomeworkTypesPage();
-                }
-                return;
-            }
-
-            if (e.target.classList.contains('add-status-btn')) {
-                const idx = parseInt(e.target.dataset.typeIndex);
-                if (appData.homeworkTypes[idx].statuses.length >= 4) {
-                    alert("每個種類最多 4 個狀態");
-                    return;
-                }
-                appData.homeworkTypes[idx].statuses.push({ 
-                    key: `s${Date.now()}`, 
-                    text: '新狀態', 
-                    color: 'bg-gray-300', 
-                    textColor: 'text-gray-800',
-                    isCompleted: false
-                });
-                await saveData();
-                renderHomeworkTypesPage();
-                return;
-            }
-
-            if (e.target.classList.contains('delete-status-btn')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex);
-                const statusIdx = parseInt(e.target.dataset.statusIndex);
-                if (appData.homeworkTypes[typeIdx].statuses.length <= 2) {
-                    alert("每個種類最少需有 2 個狀態");
-                    return;
-                }
-                appData.homeworkTypes[typeIdx].statuses.splice(statusIdx, 1);
-                await saveData();
-                renderHomeworkTypesPage();
-                return;
-            }
-            
-            if (e.target.classList.contains('color-dot')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex);
-                const statusIdx = parseInt(e.target.dataset.statusIndex);
-                const currentClass = appData.homeworkTypes[typeIdx].statuses[statusIdx].color;
-                
-                let colorIndex = STATUS_COLORS.findIndex(c => c.class === currentClass);
-                if(colorIndex === -1) colorIndex = 0;
-                
-                const nextColor = STATUS_COLORS[(colorIndex + 1) % STATUS_COLORS.length];
-                appData.homeworkTypes[typeIdx].statuses[statusIdx].color = nextColor.class;
-                appData.homeworkTypes[typeIdx].statuses[statusIdx].textColor = nextColor.textClass;
-                
-                await saveData();
-                renderHomeworkTypesPage();
-                return;
-            }
-        });
-
-        typesList.addEventListener('change', async (e) => {
-            if (e.target.classList.contains('type-name-input')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex);
-                appData.homeworkTypes[typeIdx].name = e.target.value.trim();
-                await saveData();
-            }
-            if (e.target.classList.contains('status-name-input')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex);
-                const statusIdx = parseInt(e.target.dataset.statusIndex);
-                appData.homeworkTypes[typeIdx].statuses[statusIdx].text = e.target.value.trim();
-                await saveData();
-            }
-            if (e.target.classList.contains('is-completed-check')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex);
-                const statusIdx = parseInt(e.target.dataset.statusIndex);
-                appData.homeworkTypes[typeIdx].statuses[statusIdx].isCompleted = e.target.checked;
-                await saveData();
-            }
-        });
-    }
-    
-    const sortHw = document.getElementById('sort-homework');
-    if(sortHw) sortHw.addEventListener('change', renderHomeworkList);
-    
-    const sortDetail = document.getElementById('sort-student-detail');
-    if(sortDetail) sortDetail.addEventListener('change', renderStudentDetailsPage);
-
-    const classForm = document.getElementById('add-class-form');
-    if(classForm) classForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nameInput = document.getElementById('class-name');
-        const className = nameInput.value.trim();
-        if(className) {
-            appData.classes.push({ id: generateId(), name: className, contactBook: {} });
-            await saveData();
-            nameInput.value = '';
-            renderClassSelector();
-            renderClassList();
-            if(!currentClassId) {
-                currentClassId = appData.classes[0].id;
-                localStorage.setItem('currentClassId', currentClassId);
-                renderHomeworkList();
-            }
-        }
-    });
-
-    const hwListEl = document.getElementById('homework-list');
-    if(hwListEl) hwListEl.addEventListener('click', (e) => {
+    document.getElementById('homework-list')?.addEventListener('click', (e) => {
+        const hwItem = e.target.closest('[data-id]');
         const deleteBtn = e.target.closest('.delete-hw-btn');
-        const editBtn = e.target.closest('.edit-hw-btn');
-
         if (deleteBtn) {
             e.stopPropagation();
-            const homeworkId = deleteBtn.dataset.id;
-            const hw = appData.homeworks.find(h => h.id === homeworkId);
-            showConfirmModal('刪除作業', `您確定要刪除「${hw.name}」嗎？此操作無法復原。`, async () => {
-                appData.homeworks = appData.homeworks.filter(h => h.id !== homeworkId);
+            showConfirmModal('刪除作業', `確定要刪除嗎？`, async () => {
+                appData.homeworks = appData.homeworks.filter(h => h.id !== deleteBtn.dataset.id);
                 await saveData();
                 renderHomeworkList();
             });
-            return;
-        }
-        
-        if (editBtn) {
-            e.stopPropagation();
-            const homeworkId = editBtn.dataset.id;
-            const hw = appData.homeworks.find(h => h.id === homeworkId);
-            const homeworkName = hw ? hw.name : '';
-            
-            const modal = document.getElementById('add-homework-modal');
-            document.getElementById('homework-modal-title').textContent = '更改作業名稱';
-            modal.querySelector('form').reset();
-            document.getElementById('homework-name').value = homeworkName;
-            document.getElementById('edit-homework-id').value = homeworkId;
-            
-            document.getElementById('student-count-container').style.display = 'none';
-            document.getElementById('homework-type-container').style.display = 'none';
-            document.getElementById('missing-seats-hint').style.display = 'none';
-            
-            openModal(modal);
-            return;
-        }
-
-        const hwItem = e.target.closest('[data-id]');
-        if (hwItem) {
-            // 從主列表進入，標記來源為 main-page
-            document.getElementById('detail-page').dataset.from = 'main-page';
+        } else if (hwItem) {
             showDetailPage(hwItem.dataset.id);
         }
     });
-    
-    const classListEl = document.getElementById('class-list');
-    if(classListEl) classListEl.addEventListener('click', (e) => {
-         if (e.target.closest('.delete-class-btn')) {
-            e.stopPropagation();
-            const btn = e.target.closest('.delete-class-btn');
-            const classId = btn.dataset.id;
-            const className = btn.dataset.name;
-            showConfirmModal('刪除班級', `您確定要刪除「${className}」嗎？該班級的所有作業將會一併刪除！`, async () => {
-                appData.classes = appData.classes.filter(c => c.id !== classId);
-                appData.homeworks = appData.homeworks.filter(h => h.classId !== classId);
-                
-                if(currentClassId === classId) {
-                    currentClassId = appData.classes.length > 0 ? appData.classes[0].id : null;
-                    if(currentClassId) localStorage.setItem('currentClassId', currentClassId);
-                    else localStorage.removeItem('currentClassId');
-                }
-                await saveData();
-                renderClassSelector();
-                renderClassList();
-                renderHomeworkList();
-            });
-         }
-    });
 
-    const studentDetailsList = document.getElementById('student-details-list');
-    if(studentDetailsList) studentDetailsList.addEventListener('click', (e) => {
-        if(e.target.classList.contains('homework-link')) {
-            // 從學生詳情進入，紀錄來源為 student-details-page，讓返回鍵知道要退回原位
-            document.getElementById('detail-page').dataset.from = 'student-details-page';
-            showDetailPage(e.target.dataset.id);
-        }
-    });
+    document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal'))));
 
-    const classSel = document.getElementById('class-selector');
-    if(classSel) classSel.addEventListener('change', (e) => {
-        currentClassId = e.target.value;
-        localStorage.setItem('currentClassId', currentClassId);
-        renderHomeworkList();
-    });
-
-    // --- 聯絡簿事件 (包含轉作業、編輯) ---
-    const fInc = document.getElementById('font-increase-btn');
-    if(fInc) fInc.addEventListener('click', () => {
-        blackboardFontSize += 0.1;
-        document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`;
-    });
-
-    const fDec = document.getElementById('font-decrease-btn');
-    if(fDec) fDec.addEventListener('click', () => {
-        if(blackboardFontSize > 0.5) {
-            blackboardFontSize -= 0.1;
-            document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`;
-        }
-    });
-
-    const contactForm = document.getElementById('add-contact-item-form');
-    if(contactForm) contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const input = document.getElementById('contact-book-input');
-        const newItem = input.value.trim();
-        const dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-
-        if (newItem && currentClassId) {
-            const currentClass = appData.classes.find(c => c.id === currentClassId);
-            if (!currentClass) return;
-            
-            if(!currentClass.contactBook) currentClass.contactBook = {};
-            if(!currentClass.contactBook[dateString]) currentClass.contactBook[dateString] = [];
-            
-            currentClass.contactBook[dateString].push(newItem);
-            await saveData();
-            renderContactBookItems();
-            input.value = '';
-        }
-    });
-
-    const blackboardEl = document.getElementById('blackboard-content');
-    if(blackboardEl) blackboardEl.addEventListener('click', async (e) => {
-        if (!currentClassId) return;
-        const currentClass = appData.classes.find(c => c.id === currentClassId);
-        const dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-
-        const deleteBtn = e.target.closest('.delete-contact-item-btn');
-        if (deleteBtn) {
-            const indexToDelete = parseInt(deleteBtn.dataset.index);
-            currentClass.contactBook[dateString] = currentClass.contactBook[dateString].filter((_, index) => index !== indexToDelete);
-            await saveData();
-            renderContactBookItems();
-            return;
-        }
-
-        const editBtn = e.target.closest('.edit-contact-btn');
-        if (editBtn) {
-            const index = parseInt(editBtn.dataset.index);
-            const oldText = currentClass.contactBook[dateString][index];
-            const newText = prompt('請修改聯絡簿事項：', oldText);
-            if (newText && newText.trim() !== '') {
-                currentClass.contactBook[dateString][index] = newText.trim();
-                await saveData();
-                renderContactBookItems();
-            }
-            return;
-        }
-
-        const toHwBtn = e.target.closest('.to-hw-btn');
-        if (toHwBtn) {
-            const index = parseInt(toHwBtn.dataset.index);
-            const itemText = currentClass.contactBook[dateString][index];
-            
-            const modal = document.getElementById('add-homework-modal');
-            document.getElementById('homework-modal-title').textContent = '新增聯絡簿作業';
-            modal.querySelector('form').reset();
-            document.getElementById('homework-name').value = itemText;
-            document.getElementById('edit-homework-id').value = '';
-            
-            document.getElementById('student-count-container').style.display = 'grid';
-            document.getElementById('homework-type-container').style.display = 'block';
-            document.getElementById('missing-seats-hint').style.display = 'block';
-            
-            updateTypeSelects(); 
-            
-            if (currentClass && currentClass.lastMaxSeat) {
-                document.getElementById('student-count').value = currentClass.lastMaxSeat;
-                document.getElementById('homework-missing-seats').value = currentClass.lastMissingSeats || '';
-            } else {
-                const classHws = appData.homeworks.filter(h => h.classId === currentClassId);
-                if(classHws.length > 0) {
-                     let maxSeat = 0;
-                     classHws[classHws.length-1].students.forEach(s => maxSeat = Math.max(maxSeat, s.seat));
-                     document.getElementById('student-count').value = maxSeat || 30;
-                } else {
-                     document.getElementById('student-count').value = 30;
-                }
-            }
-            openModal(modal);
-        }
-    });
-
-    const clearContactBtn = document.getElementById('clear-contact-book-btn');
-    if(clearContactBtn) clearContactBtn.addEventListener('click', () => {
-        if (!currentClassId) return;
-        const dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-        showConfirmModal('清空本日聯絡簿', `您確定要清空 ${formatDate(selectedDate)} 的所有聯絡簿事項嗎？`, async () => {
-            const currentClass = appData.classes.find(c => c.id === currentClassId);
-            currentClass.contactBook[dateString] = [];
-            await saveData();
-            renderContactBookItems();
-        });
-    });
-
-    const clearAllContactBtn = document.getElementById('clear-all-contact-book-btn');
-    if(clearAllContactBtn) clearAllContactBtn.addEventListener('click', () => {
-        if (!currentClassId) return;
-        showConfirmModal('刪除全部聯絡簿', `警告：您確定要刪除當前班級「所有日期」的聯絡簿內容嗎？此操作無法復原。`, async () => {
-            const currentClass = appData.classes.find(c => c.id === currentClassId);
-            currentClass.contactBook = {};
-            await saveData();
-            renderContactBookItems();
-        });
-    });
-
-    const applyYestBtn = document.getElementById('apply-yesterday-btn');
-    if(applyYestBtn) applyYestBtn.addEventListener('click', async () => {
-        if (!currentClassId) return;
-        
-        const yesterday = new Date(selectedDate);
-        yesterday.setDate(selectedDate.getDate() - 1);
-        const yesterdayString = formatDate(yesterday, 'YYYY-MM-DD');
-        const todayString = formatDate(selectedDate, 'YYYY-MM-DD');
-
-        const currentClass = appData.classes.find(c => c.id === currentClassId);
-        const yesterdayItems = currentClass?.contactBook?.[yesterdayString];
-
-        if (!yesterdayItems || yesterdayItems.length === 0) {
-            alert('昨日沒有聯絡簿內容可供套用。');
-            return;
-        }
-
-        showConfirmModal('套用昨日內容', '確定要用昨日的內容覆蓋今天的聯絡簿嗎？', async () => {
-            if(!currentClass.contactBook) currentClass.contactBook = {};
-            currentClass.contactBook[todayString] = [...yesterdayItems];
-            await saveData();
-            renderContactBookItems();
-        });
-    });
-    
-    // --- 日期選擇器事件 ---
-    const openDatePickerBtn = document.getElementById('open-date-picker-btn');
-    if(openDatePickerBtn) openDatePickerBtn.addEventListener('click', () => {
-        calendarDate = new Date(selectedDate);
-        renderCalendar();
-        openModal(document.getElementById('date-picker-modal'));
-    });
-
-    const closeDatePickerBtn = document.getElementById('close-date-picker-btn');
-    if(closeDatePickerBtn) closeDatePickerBtn.addEventListener('click', () => closeModal(document.getElementById('date-picker-modal')));
-
-    const prevMonthBtn = document.getElementById('prev-month-btn');
-    if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
-        calendarDate.setMonth(calendarDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    const nextMonthBtn = document.getElementById('next-month-btn');
-    if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => {
-        calendarDate.setMonth(calendarDate.getMonth() + 1);
-        renderCalendar();
-    });
-    
-    const calGrid = document.getElementById('calendar-grid');
-    if(calGrid) calGrid.addEventListener('click', (e) => {
-        const dayBtn = e.target.closest('.calendar-day');
-        if (dayBtn) {
-            const day = parseInt(dayBtn.dataset.day);
-            selectedDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), day);
-            renderContactBookItems();
-            closeModal(document.getElementById('date-picker-modal'));
-        }
-    });
-
-    // --- 歡迎畫面與同步處理 ---
-    const welcomeSkipBtn = document.getElementById('welcome-skip-btn');
-    if(welcomeSkipBtn) welcomeSkipBtn.addEventListener('click', () => {
-        localStorage.setItem('hasSeenWelcome_final', 'true');
-        closeModal(document.getElementById('welcome-modal'));
-        showMainPage();
-        if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal'));
-    });
-
-    const welcomeLinkBtn = document.getElementById('welcome-link-btn');
-    if(welcomeLinkBtn) welcomeLinkBtn.addEventListener('click', async () => {
-        if (!window.showSaveFilePicker) {
-            alert("很抱歉，您的瀏覽器不支援自動儲存本地檔案功能。系統將為您切換至「瀏覽器暫存模式」。");
-            localStorage.setItem('hasSeenWelcome_final', 'true');
-            closeModal(document.getElementById('welcome-modal'));
-            showMainPage();
-            if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal'));
-            return;
-        }
-
-        try {
-            const handle = await window.showSaveFilePicker({
-                suggestedName: '作業點收資料.json',
-                types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }]
-            });
-            fileHandle = handle;
-            await saveFileHandle(handle);
-            await syncFromFileHandle();
-            await saveData();
-            
-            localStorage.setItem('hasSeenWelcome_final', 'true');
-            closeModal(document.getElementById('welcome-modal'));
-            
-            setTimeout(() => {
-                alert("✅ 成功建立並綁定檔案！系統將自動儲存變更。");
-            }, 300);
-
-            showMainPage();
-            if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal'));
-        } catch(e) {
-            if (e.name === 'AbortError') {
-                console.log("使用者取消選取");
-            } else {
-                alert("無法開啟檔案選擇器。\n\n若您在「預覽視窗」中執行，安全政策會阻擋此功能。請將本檔案下載並用 Chrome/Edge 直接開啟。\n\n錯誤細節：" + e.message);
-            }
-        }
-    });
-
-    const resumeSyncBtn = document.getElementById('resume-sync-btn');
-    if(resumeSyncBtn) resumeSyncBtn.addEventListener('click', async () => {
-        if (!fileHandle) return;
-        try {
-            if ((await fileHandle.requestPermission({ mode: 'readwrite' })) === 'granted') {
-                document.getElementById('sync-banner').classList.add('hidden');
-                document.body.classList.remove('has-banner');
-                await syncFromFileHandle();
-                fullRender();
-            }
-        } catch(e) {
-            console.error(e);
-        }
-    });
-
-    // --- 在改變視窗大小時動態重繪學生方格以確保不產生滾動條 ---
-    window.addEventListener('resize', () => {
-        if (currentPage === 'detail-page' && currentHomeworkId) {
-            renderStudentGrid(currentHomeworkId);
-        }
-    });
-
-    // --- 初始化 ---
     async function init() {
         const localData = localStorage.getItem('homeworkAppData');
         if (localData) {
             appData = JSON.parse(localData);
             fixDates(appData);
         }
-
         setupButtonEvents(); 
-
         document.getElementById('loading-page').classList.add('hidden');
-
         if (!localStorage.getItem('hasSeenWelcome_final')) {
             openModal(document.getElementById('welcome-modal'));
             return;
         }
-
-        if (window.showSaveFilePicker) {
-            try {
-                fileHandle = await getFileHandle();
-                if (fileHandle) {
-                    const permission = await fileHandle.queryPermission({ mode: 'readwrite' });
-                    if (permission === 'granted') {
-                        await syncFromFileHandle();
-                    } else {
-                        document.getElementById('sync-banner').classList.remove('hidden');
-                        document.body.classList.add('has-banner');
-                    }
-                }
-            } catch (e) {
-                console.log("不支援 File System Access");
-            }
-        }
-        
-        pushPageState({ page: 'main' }, '#main');
         showMainPage(true);
-        if(appData.classes.length === 0) {
-            openModal(document.getElementById('manage-classes-modal'));
-        }
     }
     
     init();
