@@ -62,7 +62,7 @@
         }
     </script>
 </head>
-<body class="text-slate-800 antialiased">
+<body class="text-slate-800 antialiased overflow-x-hidden">
 
     <!-- 頂部同步列：美化為浮動毛玻璃膠囊 -->
     <div id="sync-banner" class="hidden mx-auto max-w-xl bg-slate-950/85 backdrop-blur-xl text-white px-5 py-3 rounded-2xl justify-between items-center text-sm z-[90] fixed top-4 left-4 right-4 shadow-2xl border border-white/10 animate-bounce">
@@ -142,7 +142,8 @@
             <div id="status-summary" class="flex flex-wrap gap-2.5 mt-5 text-sm font-bold"></div>
         </header>
         
-        <div class="flex-grow flex items-center justify-center w-full overflow-hidden py-2">
+        <!-- 修復果凍邊緣裁切：將 overflow-hidden 改為 overflow-visible -->
+        <div class="flex-grow flex items-center justify-center w-full overflow-visible py-2 px-2">
             <div id="student-grid" class="w-full cursor-pointer transition-all duration-300"></div>
         </div>
     </div>
@@ -201,9 +202,14 @@
                     <p id="contact-book-date" class="text-slate-400 mt-1 font-bold text-sm tracking-wide"></p>
                 </div>
                 <div class="flex gap-2.5 flex-wrap items-center justify-end w-full lg:w-auto">
+                    <!-- 字體與行距調整控制組 -->
                     <div class="flex bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <button id="font-decrease-btn" class="px-4 py-2 text-slate-500 hover:bg-slate-50 border-r border-slate-200 font-bold transition-colors" title="縮小字體">A-</button>
-                        <button id="font-increase-btn" class="px-4 py-2 text-slate-500 hover:bg-slate-50 font-bold transition-colors" title="放大字體">A+</button>
+                        <button id="font-decrease-btn" class="px-3.5 py-2 text-slate-500 hover:bg-slate-50 border-r border-slate-200 font-bold transition-colors" title="縮小字體">A-</button>
+                        <button id="font-increase-btn" class="px-3.5 py-2 text-slate-500 hover:bg-slate-50 font-bold transition-colors" title="放大字體">A+</button>
+                    </div>
+                    <div class="flex bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mr-1 sm:mr-2">
+                        <button id="lineheight-decrease-btn" class="px-3.5 py-2 text-slate-500 hover:bg-slate-50 border-r border-slate-200 font-bold transition-colors" title="縮小行距">↕️-</button>
+                        <button id="lineheight-increase-btn" class="px-3.5 py-2 text-slate-500 hover:bg-slate-50 font-bold transition-colors" title="加大行距">↕️+</button>
                     </div>
 
                     <button id="apply-yesterday-btn" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap text-sm">📋 套用昨日</button>
@@ -211,7 +217,7 @@
                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 選擇日期
                     </button>
                     <button id="clear-contact-book-btn" class="bg-white text-rose-500 border border-rose-200 font-bold py-2.5 px-4 rounded-xl hover:bg-rose-50/50 transition-colors whitespace-nowrap text-sm">清空本日</button>
-                    <button id="clear-all-contact-book-btn" class="bg-rose-50 text-rose-600 border border-rose-200 font-bold py-2.5 px-4 rounded-xl hover:bg-rose-600 hover:text-white transition-all whitespace-nowrap text-sm">清空全部記錄</button>
+                    <button id="clear-all-contact-book-btn" class="bg-rose-50 text-rose-600 border border-rose-200 font-bold py-2.5 px-4 rounded-xl hover:bg-rose-600 hover:text-white transition-all whitespace-nowrap text-sm">清空全部</button>
                 </div>
             </div>
         </header>
@@ -225,7 +231,8 @@
                 <!-- 模擬木框陰影 -->
                 <div class="absolute top-0 left-0 w-full h-5 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10"></div>
                 
-                <div id="blackboard-content" class="flex-grow text-slate-100 space-y-4 font-mono chalk-text selection:bg-yellow-500/30 relative z-20" style="font-size: 1.25rem;"></div>
+                <!-- 黑板內容區，動態接收 fontSize 與 lineHeight -->
+                <div id="blackboard-content" class="flex-grow text-slate-100 font-mono chalk-text selection:bg-yellow-500/30 relative z-20" style="font-size: 1.25rem; line-height: 1.75;"></div>
                 
                 <form id="add-contact-item-form" class="mt-8 flex gap-3 relative z-20">
                     <input type="text" id="contact-book-input" class="flex-grow bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-xl p-3.5 sm:p-4 focus:outline-none focus:ring-2 focus:ring-white/40 placeholder-white/40 transition-all font-mono shadow-inner" placeholder="在此輸入聯絡事項..." autocomplete="off">
@@ -235,30 +242,91 @@
         </div>
     </div>
 
-    <!-- Modals (全屏高級毛玻璃模糊背景) -->
-    <div id="intro-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden modal z-[100] opacity-0">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl shadow-slate-900/20 p-8 w-full max-w-2xl transform scale-95 max-h-[90vh] flex flex-col border border-slate-100">
-            <h2 class="text-2xl font-extrabold mb-5 text-slate-800 flex-shrink-0 border-b border-slate-100 pb-4">📖 系統功能與使用教學</h2>
-            <div class="overflow-y-auto pr-2 space-y-6 text-sm text-slate-500 flex-grow leading-relaxed font-medium">
-                <div>
-                    <h3 class="text-lg font-bold text-indigo-600 mb-1 flex items-center gap-2">安裝為 App (PWA)</h3>
-                    <p>只要點擊右上角的「安裝 App」，系統就會在您的手機桌面或電腦上建立一個專屬圖示。打開後不僅沒有網址列，全螢幕的體驗更是快又流暢！</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-indigo-600 mb-1 flex items-center gap-2">資料安全與本地儲存</h3>
-                    <p>本系統採用最新的 <b>File System Access API</b>，所有的資料都會直接寫入您設定的 <code>.json</code> 檔案中，完全無雲端外洩風險！系統會在每次操作時<b>自動覆蓋儲存</b>，讓您無後顧之憂。</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-indigo-600 mb-1 flex items-center gap-2">作業點收與管理</h3>
-                    <ul class="list-disc pl-5 space-y-1">
-                        <li><b>智慧缺號排除：</b>支援單號與範圍（例如 15,16,20-25）輸入，自動跳過該號碼，並自動記憶設定。</li>
-                        <li><b>全班一鍵變更：</b>點進作業後，可使用上方下拉選單，瞬間將全班狀態改為「已繳交」或「已完成」。</li>
-                        <li><b>點擊狀態切換：</b>滑鼠點擊或手指觸控座號方格，即可在不同狀態間循環切換。</li>
-                    </ul>
-                </div>
+    <!-- Modals (全屏高級毛玻璃模糊背景) 終極介紹升級版 -->
+    <div id="intro-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-lg flex items-center justify-center p-4 sm:p-6 hidden modal z-[100] opacity-0">
+        <div class="modal-content bg-white rounded-3xl shadow-2xl shadow-slate-900/40 p-0 w-full max-w-3xl transform scale-95 max-h-[90vh] flex flex-col border border-slate-100 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-slate-50 px-8 py-6 border-b border-slate-200 flex justify-between items-center flex-shrink-0">
+                <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-3">
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-xl"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>
+                    作業點收系統 - 終極功能指南
+                </h2>
+                <button class="cancel-btn text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <div class="flex justify-end pt-5 mt-5 border-t border-slate-100 flex-shrink-0">
-                <button type="button" class="cancel-btn bg-slate-800 text-white font-bold py-2.5 px-8 rounded-xl hover:bg-slate-900 transition-colors">我知道了</button>
+            
+            <!-- Modal Body (Detailed content) -->
+            <div class="overflow-y-auto p-8 space-y-8 text-sm text-slate-600 flex-grow font-medium custom-scrollbar">
+                
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">📱 安裝與跨平台體驗 (PWA)</h3>
+                        <p class="leading-relaxed">點擊首頁右上角的「安裝 App」即可將系統加至主畫面。安裝後將移除瀏覽器網址列，為您提供無干擾的<b class="text-indigo-500">全螢幕沉浸式體驗</b>，並且完整支援離線操作模式。</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">🔐 隱私與硬碟同步技術</h3>
+                        <p class="leading-relaxed">本系統導入最先進的 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-rose-500 font-bold">File System Access API</code>。只要綁定本機的 JSON 檔案，所有的操作變更都會<b>即時覆寫至您的硬碟中</b>，實現 0 雲端外洩、100% 隱私安全的本機端資料庫架構。</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">📝 智慧作業點收與防呆</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><b class="text-slate-700">區間缺號解析：</b>支援「單號」與「範圍」混合輸入（例：<code class="bg-slate-100 px-1 py-0.5 rounded">4, 15-20</code>），系統將自動為您生成完美的座號矩陣，並自動記憶該班級配置。</li>
+                            <li><b class="text-slate-700">全班一鍵變更：</b>提供下拉選單，能瞬間將全班狀態統一改為「已繳交」或「已完成」。</li>
+                            <li><b class="text-slate-700">果凍微動效：</b>點擊座號方格即會觸發立體軟膠回彈特效與光暈，色彩切換絲滑無閃爍。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">🎨 作業種類自訂與美學標籤</h3>
+                        <p class="leading-relaxed">在「作業種類」設定中，您可以自由建立各科專用的點收類別（至多配置 4 種核心狀態切換）。點擊色點即可更換高級標籤配色，並能自訂哪種狀態才算作「完成」。</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">🏫 擬真黑板聯絡簿與行距調節</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><b class="text-slate-700">視覺與版面自訂：</b>極致烤漆黑板與粉筆光澤，<b class="text-indigo-500">同時支援 A+/A- (字體縮放) 以及 ↕️+/↕️- (行距縮放)</b>，確保在各式投影螢幕上皆具完美閱讀性，且系統會自動記憶您的喜好。</li>
+                            <li><b class="text-slate-700">連動整合：</b>滑鼠懸停於聯絡事項，點擊「📖」按鈕，即可將該行文字瞬間無縫轉發為今日的作業點收清單。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">📊 學生詳情與全勤分析</h3>
+                        <p class="leading-relaxed">「學生詳情」如同您的控制儀表板，將彙整該班級「所有未完成」的作業與狀態，並提供<b class="text-slate-700">🏆 全勤榮譽名單</b>，讓表現優異的學生一目瞭然。</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 mt-1"><div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">⏳ 時光機與自動防呆救援</h3>
+                        <p class="leading-relaxed">在「資料管理」中配備了強大的時光機功能。系統於每日背景輪替保留前三天的快取紀錄，若不慎誤刪班級或作業，點擊還原即可瞬間救回。您也能手動匯出 JSON 備份檔至雲端封存。</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 px-8 py-5 border-t border-slate-200 flex justify-end flex-shrink-0">
+                <button type="button" class="cancel-btn bg-slate-800 text-white font-bold py-3 px-10 rounded-xl hover:bg-slate-900 shadow-md transition-transform active:scale-95">開始使用</button>
             </div>
         </div>
     </div>
@@ -287,7 +355,7 @@
 
     <!-- 資料管理 Modal -->
     <div id="data-management-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden modal z-50 opacity-0">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform scale-95 max-h-[90vh] overflow-y-auto border border-slate-100">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform scale-95 max-h-[90vh] overflow-y-auto border border-slate-100 custom-scrollbar">
            <h2 class="text-2xl font-extrabold mb-6 text-slate-900">資料管理</h2>
            
            <div class="space-y-5">
@@ -308,7 +376,7 @@
                <div class="p-5 border border-emerald-100 rounded-2xl bg-emerald-50/50 shadow-sm">
                    <h3 class="font-bold text-emerald-900 mb-2">還原最近的自動備份</h3>
                    <p class="text-xs text-emerald-700 mb-3 leading-relaxed">系統每日會自動在瀏覽器保留備份（最多保留 3 天）。若發生誤刪，可點擊下方紀錄救回資料。</p>
-                   <div id="auto-backup-list" class="space-y-2 max-h-32 overflow-y-auto pr-1"></div>
+                   <div id="auto-backup-list" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
                </div>
 
                <div class="relative flex py-2 items-center">
@@ -390,7 +458,7 @@
                  <button type="submit" class="bg-slate-800 text-white font-bold py-3 px-5 rounded-xl shadow-md hover:bg-slate-900 transition-colors whitespace-nowrap">新增班級</button>
             </form>
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 font-black">現有班級清單</h3>
-            <div id="class-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+            <div id="class-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar"></div>
             <div class="flex justify-end pt-5 mt-5 border-t border-slate-100">
                 <button type="button" class="cancel-btn bg-slate-100 text-slate-600 font-bold py-2.5 px-6 rounded-xl hover:bg-slate-200 transition-colors">關閉</button>
             </div>
@@ -423,7 +491,7 @@
     <div id="all-done-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden modal z-50 opacity-0">
         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg transform scale-95 border border-slate-100">
             <h2 class="text-2xl font-extrabold mb-6 text-slate-900">完成 / 已繳交學生名單</h2>
-            <div id="all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto pr-1"></div>
+            <div id="all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto pr-1 custom-scrollbar"></div>
             <div class="flex justify-end pt-6 mt-4 border-t border-slate-100">
                 <button type="button" class="cancel-btn bg-slate-100 text-slate-600 font-bold py-2.5 px-6 rounded-xl hover:bg-slate-200 transition-colors">關閉</button>
             </div>
@@ -435,7 +503,7 @@
         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg transform scale-95 border border-slate-100">
             <h2 class="text-2xl font-extrabold mb-2 text-slate-900">🏆 全勤榮譽名單</h2>
             <p class="text-sm text-slate-500 mb-6">此處列出在當前班級的所有作業中，狀態皆為「已完成/已繳交」的學生。</p>
-            <div id="overall-all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto pr-1"></div>
+            <div id="overall-all-done-list" class="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-96 overflow-y-auto pr-1 custom-scrollbar"></div>
             <div class="flex justify-end pt-6 mt-4 border-t border-slate-100">
                 <button type="button" class="cancel-btn bg-slate-100 text-slate-600 font-bold py-2.5 px-6 rounded-xl hover:bg-slate-200 transition-colors">關閉</button>
             </div>
@@ -485,10 +553,7 @@
         toast.innerHTML = `${icon}<span>${message}</span>`;
         container.appendChild(toast);
         
-        setTimeout(() => {
-            toast.classList.remove('translate-y-4', 'opacity-0');
-        }, 10);
-        
+        setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
         setTimeout(() => {
             toast.classList.add('translate-y-4', 'opacity-0');
             setTimeout(() => toast.remove(), 300);
@@ -512,7 +577,7 @@
         };
         const cleanup = () => {
             confirmOk.removeEventListener('click', okHandler);
-            confirmCancel.classList.remove('hidden'); // 還原取消按鈕
+            confirmCancel.classList.remove('hidden'); // 安全還原取消按鈕
         };
         confirmOk.addEventListener('click', okHandler);
     }
@@ -553,7 +618,10 @@
     let currentHomeworkId = null;
     let selectedDate = new Date();
     let calendarDate = new Date();
-    let blackboardFontSize = 1.25;
+    
+    // 黑板樣式參數 (支援 localStorage 持久化記憶)
+    let blackboardFontSize = parseFloat(localStorage.getItem('hw_pref_fontSize')) || 1.25;
+    let blackboardLineHeight = parseFloat(localStorage.getItem('hw_pref_lineHeight')) || 1.75;
     
     let currentPage = 'main-page';
     let scrollPositions = {};
@@ -723,15 +791,20 @@
         return statusConfig ? statusConfig.isCompleted : false;
     }
 
+    // 修復取消按鈕遺失的問題
     function showConfirmModal(title, message, onConfirm) {
         document.getElementById('confirm-title').textContent = title;
         document.getElementById('confirm-message').textContent = message;
+        document.getElementById('confirm-cancel').classList.remove('hidden'); // CRUCIAL FIX
         openModal(document.getElementById('confirm-modal'));
+        
         const confirmOk = document.getElementById('confirm-ok'), confirmCancel = document.getElementById('confirm-cancel');
         const confirmHandler = () => { onConfirm(); closeModal(document.getElementById('confirm-modal')); cleanup(); };
         const cancelHandler = () => { closeModal(document.getElementById('confirm-modal')); cleanup(); };
         const cleanup = () => { confirmOk.removeEventListener('click', confirmHandler); confirmCancel.removeEventListener('click', cancelHandler); };
-        confirmOk.addEventListener('click', confirmHandler); confirmCancel.addEventListener('click', cancelHandler);
+        
+        confirmOk.addEventListener('click', confirmHandler); 
+        confirmCancel.addEventListener('click', cancelHandler);
     }
 
     function checkAndCleanupStorage() {
@@ -750,7 +823,6 @@
         } catch (error) {}
     }
 
-    // ⚡ 局部防閃爍更新與美化 UI 整合
     function updateSingleStudentUI(seat, oldStatusKey, newStatusKey, typeConfig) {
         const btn = document.getElementById(`btn-seat-${seat}`);
         if (!btn) return;
@@ -758,12 +830,12 @@
         const newStatus = typeConfig.statuses.find(s => s.key === newStatusKey);
 
         if (oldStatus && newStatus) {
-            const oldRingColor = oldStatus.color.replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
-            const oldClasses = [...oldStatus.color.split(' '), ...oldStatus.textColor.split(' '), `hover:${oldRingColor}`, `focus:${oldRingColor}`].filter(Boolean);
+            const oldRingColor = (oldStatus.color || '').replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
+            const oldClasses = [...(oldStatus.color || '').split(' '), ...(oldStatus.textColor || '').split(' '), `hover:${oldRingColor}`, `focus:${oldRingColor}`].filter(Boolean);
             btn.classList.remove(...oldClasses);
 
-            const newRingColor = newStatus.color.replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
-            const newClasses = [...newStatus.color.split(' '), ...newStatus.textColor.split(' '), `hover:${newRingColor}`, `focus:${newRingColor}`].filter(Boolean);
+            const newRingColor = (newStatus.color || '').replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
+            const newClasses = [...(newStatus.color || '').split(' '), ...(newStatus.textColor || '').split(' '), `hover:${newRingColor}`, `focus:${newRingColor}`].filter(Boolean);
             btn.classList.add(...newClasses);
             
             const spans = btn.querySelectorAll('span');
@@ -838,7 +910,7 @@
         const sortMethod = document.getElementById('sort-homework') ? document.getElementById('sort-homework').value : 'time';
         filteredHomeworks.sort((a, b) => {
             if (sortMethod === 'time') return (b.createdAt || new Date(0)).getTime() - (a.createdAt || new Date(0)).getTime();
-            if (sortMethod === 'missing') return (b.students.filter(s => !isStudentCompleted(s, b.typeId || 'default')).length) - (a.students.filter(s => !isStudentCompleted(s, a.typeId || 'default')).length);
+            if (sortMethod === 'missing') return ((b.students || []).filter(s => !isStudentCompleted(s, b.typeId || 'default')).length) - ((a.students || []).filter(s => !isStudentCompleted(s, a.typeId || 'default')).length);
             return 0;
         });
 
@@ -854,10 +926,10 @@
         } else {
             filteredHomeworks.forEach(hw => {
                 const typeId = hw.typeId || 'default'; const typeConfig = getHomeworkType(typeId);
-                const statusCounts = hw.students.reduce((acc, student) => { acc[student.status] = (acc[student.status] || 0) + 1; return acc; }, {});
-                const completedCount = hw.students.filter(s => isStudentCompleted(s, typeId)).length;
+                const statusCounts = (hw.students || []).reduce((acc, student) => { acc[student.status] = (acc[student.status] || 0) + 1; return acc; }, {});
+                const completedCount = (hw.students || []).filter(s => isStudentCompleted(s, typeId)).length;
                 let summaryHtml = '';
-                if (completedCount === hw.students.length && hw.students.length > 0) {
+                if (completedCount === (hw.students || []).length && (hw.students || []).length > 0) {
                     summaryHtml = `<div class="text-emerald-600 font-bold bg-emerald-50/70 border border-emerald-200/50 px-3 py-1 rounded-xl text-xs inline-flex items-center gap-1">🎉 全班已到齊</div>`;
                 } else {
                     summaryHtml = typeConfig.statuses.filter(s => statusCounts[s.key] > 0).map(s => {
@@ -883,12 +955,12 @@
                              <span class="text-[10px] font-black bg-slate-100 text-slate-400 tracking-wider px-2 py-0.5 rounded-md whitespace-nowrap uppercase">${typeConfig.name}</span>
                             <h2 class="text-lg font-black text-slate-800 truncate tracking-tight group-hover:text-indigo-600 transition-colors" title="${hw.name}">${hw.name}</h2>
                         </div>
-                        <div class="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button data-id="${hw.id}" class="edit-hw-btn text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-all"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
-                            <button data-id="${hw.id}" class="delete-hw-btn text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>
+                        <div class="flex items-center gap-1 flex-shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                            <button data-id="${hw.id}" class="edit-hw-btn text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-all"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-4 lg:w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
+                            <button data-id="${hw.id}" class="delete-hw-btn text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-4 lg:w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>
                         </div>
                     </div>
-                    <div class="flex justify-between items-center text-[11px] font-bold text-slate-400 mt-2.5 tracking-wider relative z-10"><span>👥 名單 ${hw.students.length} 人</span><span>📅 ${createdDate}</span></div>
+                    <div class="flex justify-between items-center text-[11px] font-bold text-slate-400 mt-2.5 tracking-wider relative z-10"><span>👥 名單 ${(hw.students || []).length} 人</span><span>📅 ${createdDate}</span></div>
                     <div class="mt-4 flex flex-wrap gap-1.5 relative z-10">${summaryHtml}</div>
                 `;
                 homeworkList.appendChild(hwItem);
@@ -904,7 +976,7 @@
         currentHomeworkId = homeworkId;
         document.getElementById('detail-homework-name').textContent = hw.name;
         studentGrid.innerHTML = '';
-        const count = hw.students.length;
+        const count = (hw.students || []).length;
         if (count === 0) return; 
         
         const containerWidth = studentGrid.parentElement.clientWidth - 32; 
@@ -934,11 +1006,11 @@
             });
         }
 
-        hw.students.forEach(student => {
+        (hw.students || []).forEach(student => {
             let statusInfo = typeConfig.statuses.find(s => s.key === student.status);
             if (!statusInfo) { statusInfo = typeConfig.statuses[0]; student.status = statusInfo.key; }
             const studentBtn = document.createElement('button');
-            const ringColor = statusInfo.color.replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
+            const ringColor = (statusInfo.color || '').replace('bg-', 'ring-').replace('-500', '-200').replace('-400', '-200');
             studentBtn.id = `btn-seat-${student.seat}`;
             studentBtn.className = `student-btn rounded-2xl shadow-sm text-center transition-all duration-300 transform hover:scale-[1.05] active:scale-90 ${statusInfo.color} ${statusInfo.textColor} flex flex-col items-center justify-center border-2 border-transparent aspect-square overflow-hidden cursor-pointer w-full h-full ring-4 ring-offset-1 ring-transparent hover:${ringColor} focus:outline-none focus:${ringColor}`;
             studentBtn.dataset.seat = student.seat;
@@ -963,20 +1035,20 @@
         }
 
         const studentData = []; let maxStudentCount = 0;
-        filteredHomeworks.forEach(hw => { hw.students.forEach(s => { maxStudentCount = Math.max(maxStudentCount, s.seat); }); });
+        filteredHomeworks.forEach(hw => { (hw.students || []).forEach(s => { maxStudentCount = Math.max(maxStudentCount, s.seat); }); });
 
         if (maxStudentCount === 0) { studentDetailsList.innerHTML = '<div class="col-span-full text-center text-slate-400 py-12 font-bold">此班級尚無建立學生。</div>'; return; }
         
         for (let i = 1; i <= maxStudentCount; i++) {
             const issues = []; let isExistsInAnyHw = false;
             filteredHomeworks.forEach(hw => {
-                const typeId = hw.typeId || 'default'; const student = hw.students.find(s => s.seat === i);
+                const typeId = hw.typeId || 'default'; const student = (hw.students || []).find(s => s.seat === i);
                 if (student) {
                     isExistsInAnyHw = true;
                     if (!isStudentCompleted(student, typeId)) {
                         const typeConfig = getHomeworkType(typeId);
                         const statusInfo = typeConfig.statuses.find(s => s.key === student.status) || typeConfig.statuses[0];
-                        issues.push({ hwName: hw.name, hwId: hw.id, statusText: statusInfo.text, colorClass: statusInfo.textColor.includes('white') ? statusInfo.color.replace('bg-', 'text-') : 'text-slate-600' });
+                        issues.push({ hwName: hw.name, hwId: hw.id, statusText: statusInfo.text, colorClass: statusInfo.textColor.includes('white') ? (statusInfo.color || '').replace('bg-', 'text-') : 'text-slate-600' });
                     }
                 }
             });
@@ -1018,7 +1090,7 @@
                         <div class="color-dot ${status.color} w-5 h-5 shadow-sm border-2 border-white cursor-pointer rounded-full flex-shrink-0 transition-transform hover:scale-110" data-type-index="${typeIndex}" data-status-index="${statusIndex}"></div>
                         <input type="text" class="status-name-input bg-transparent font-bold focus:outline-none focus:border-b-2 focus:border-indigo-400 px-1 py-0.5 w-24 text-sm text-slate-700" value="${status.text}" data-type-index="${typeIndex}" data-status-index="${statusIndex}">
                         <label class="flex items-center text-[11px] font-black text-slate-400 cursor-pointer select-none ml-auto bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm hover:text-slate-600">
-                            <input type="checkbox" class="mr-1 is-completed-check w-3.5 h-3.5 text-indigo-500 rounded border-slate-300 focus:ring-indigo-500" ${status.isCompleted ? 'checked' : ''} data-type-index="${typeIndex}" data-status-index="${statusIndex}"> 完成
+                            <input type="checkbox" class="mr-1.5 is-completed-check w-3.5 h-3.5 text-indigo-500 rounded border-slate-300 focus:ring-indigo-500" ${status.isCompleted ? 'checked' : ''} data-type-index="${typeIndex}" data-status-index="${statusIndex}"> 完成
                         </label>
                         <button class="delete-status-btn text-slate-300 hover:text-rose-500 p-1 rounded transition-colors" data-type-index="${typeIndex}" data-status-index="${statusIndex}">&times;</button>
                     </div>`;
@@ -1040,7 +1112,10 @@
     function renderContactBookItems() {
         const blackboard = document.getElementById('blackboard-content');
         if(!blackboard) return;
-        blackboard.innerHTML = ''; blackboard.style.fontSize = `${blackboardFontSize}rem`;
+        blackboard.innerHTML = ''; 
+        blackboard.style.fontSize = `${blackboardFontSize}rem`;
+        blackboard.style.lineHeight = `${blackboardLineHeight}`;
+        
         if (!currentClassId) return;
         const currentClass = appData.classes.find(c => c.id === currentClassId);
         const dateDisplay = document.getElementById('contact-book-date');
@@ -1056,8 +1131,8 @@
             const itemEl = document.createElement('div');
             itemEl.className = 'flex items-start justify-between group p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10';
             itemEl.innerHTML = `
-                <div class="flex-grow pt-0.5"><span class="mr-3 font-bold opacity-60">${index + 1}.</span><span class="leading-relaxed whitespace-pre-wrap">${item}</span></div>
-                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all ml-4 flex-shrink-0 bg-slate-900/60 backdrop-blur-md rounded-xl p-1 border border-white/10 shadow-xl">
+                <div class="flex-grow pt-0.5"><span class="mr-3 font-bold opacity-60">${index + 1}.</span><span class="whitespace-pre-wrap">${item}</span></div>
+                <div class="flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all ml-4 flex-shrink-0 bg-slate-900/60 backdrop-blur-md rounded-xl p-1 border border-white/10 shadow-xl">
                     <button class="to-hw-btn w-8 h-8 flex items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 hover:bg-teal-500 hover:text-white transition-all font-bold" data-index="${index}" title="轉為作業發布">📖</button>
                     <button class="edit-contact-btn w-8 h-8 flex items-center justify-center rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-white transition-all font-bold" data-index="${index}" title="編輯內文">✏️</button>
                     <button class="delete-contact-item-btn w-8 h-8 flex items-center justify-center rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white transition-all font-bold text-lg leading-none" data-index="${index}" title="擦除此項">&times;</button>
@@ -1201,10 +1276,12 @@
     function fullRender() { updateTypeSelects(); renderClassSelector(); renderClassList(); renderHomeworkList(); }
     
     // =========================================================================
-    // 🛡️ 整合事件處理綁定生命週期
+    // 🛡️ 整合事件處理綁定生命週期 (嚴格防禦模式)
     // =========================================================================
     function setupButtonEvents() {
         const bindClick = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('click', handler); };
+        const bindChange = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('change', handler); };
+        const bindSubmit = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('submit', handler); };
 
         bindClick('intro-btn', () => openModal(document.getElementById('intro-modal')));
         bindClick('show-add-modal-btn', () => {
@@ -1219,7 +1296,7 @@
                 } else {
                     const classHws = appData.homeworks.filter(h => h.classId === currentClassId);
                     if (classHws.length > 0) {
-                         let maxSeat = 0; classHws[classHws.length-1].students.forEach(s => maxSeat = Math.max(maxSeat, s.seat)); document.getElementById('student-count').value = maxSeat || 30;
+                         let maxSeat = 0; (classHws[classHws.length-1].students || []).forEach(s => maxSeat = Math.max(maxSeat, s.seat)); document.getElementById('student-count').value = maxSeat || 30;
                     } else document.getElementById('student-count').value = 30;
                     document.getElementById('homework-missing-seats').value = '';
                 }
@@ -1244,22 +1321,21 @@
 
         bindClick('show-all-done-btn', () => {
             if (!currentHomeworkId) return; const hw = appData.homeworks.find(h => h.id === currentHomeworkId); if (!hw) return;
-            const doneStudents = hw.students.filter(s => isStudentCompleted(s, hw.typeId || 'default')); renderAllDoneList(doneStudents, 'all-done-list'); openModal(document.getElementById('all-done-modal'));
+            const doneStudents = (hw.students || []).filter(s => isStudentCompleted(s, hw.typeId || 'default')); renderAllDoneList(doneStudents, 'all-done-list'); openModal(document.getElementById('all-done-modal'));
         });
 
         bindClick('show-overall-all-done-btn', () => {
             const filteredHomeworks = appData.homeworks.filter(hw => hw.classId === currentClassId);
             if (filteredHomeworks.length === 0) { renderAllDoneList([], 'overall-all-done-list'); openModal(document.getElementById('overall-all-done-modal')); return; }
             const problematicStudents = new Set(); let maxStudentCount = 0;
-            filteredHomeworks.forEach(hw => { hw.students.forEach(student => { maxStudentCount = Math.max(maxStudentCount, student.seat); if (!isStudentCompleted(student, hw.typeId || 'default')) problematicStudents.add(student.seat); }); });
+            filteredHomeworks.forEach(hw => { (hw.students || []).forEach(student => { maxStudentCount = Math.max(maxStudentCount, student.seat); if (!isStudentCompleted(student, hw.typeId || 'default')) problematicStudents.add(student.seat); }); });
             const allDoneStudents = [];
             for (let i = 1; i <= maxStudentCount; i++) {
-                if (filteredHomeworks.some(h => h.students.find(s => s.seat === i)) && !problematicStudents.has(i)) allDoneStudents.push(i);
+                if (filteredHomeworks.some(h => (h.students || []).find(s => s.seat === i)) && !problematicStudents.has(i)) allDoneStudents.push(i);
             }
             renderAllDoneList(allDoneStudents, 'overall-all-done-list'); openModal(document.getElementById('overall-all-done-modal'));
         });
 
-        // ⚡ 局部防閃爍更新
         const studentGrid = document.getElementById('student-grid');
         if (studentGrid) {
             studentGrid.addEventListener('click', async (e) => {
@@ -1267,7 +1343,7 @@
                 if (studentBtn) {
                     const seat = parseInt(studentBtn.dataset.seat);
                     const hw = appData.homeworks.find(h => h.id === currentHomeworkId);
-                    if (!hw) return;
+                    if (!hw || !hw.students) return;
                     const studentIndex = hw.students.findIndex(s => s.seat === seat);
                     if (studentIndex === -1) return;
                     
@@ -1288,312 +1364,291 @@
                 }
             });
         }
-    }
 
-    const linkFileBtn = document.getElementById('link-file-btn');
-    if(linkFileBtn) linkFileBtn.addEventListener('click', async () => {
-        try {
-            if (!window.showSaveFilePicker) throw new Error("您的瀏覽器不支援此功能");
-            const handle = await window.showSaveFilePicker({ suggestedName: '作業點收資料.json', types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }] });
-            fileHandle = handle; await saveFileHandle(handle); await syncFromFileHandle(); await saveData(); 
-            document.getElementById('sync-banner').classList.add('hidden'); document.body.classList.remove('has-banner');
-            updateDataManagementUI(); fullRender(); showToast("已安全連結硬碟儲存檔案！", "success");
-        } catch (e) { if (e.name !== 'AbortError') showAlertModal("無法連結檔案", "錯誤細節：" + e.message); }
-    });
-
-    const unlinkBtn = document.getElementById('unlink-file-btn');
-    if(unlinkBtn) unlinkBtn.addEventListener('click', async () => {
-        showConfirmModal('解除安全連結', '確定要解除本地硬碟檔案連結嗎？解除後資料將僅儲存於瀏覽器暫存區。', async () => {
-            await clearFileHandle(); fileHandle = null; updateDataManagementUI(); showToast("已解除硬碟檔案連結", "info");
-        });
-    });
-
-    const exportBtn = document.getElementById('export-data-btn');
-    if(exportBtn) exportBtn.addEventListener('click', () => {
-        const exportHw = document.getElementById('export-hw-chk').checked, exportTypes = document.getElementById('export-types-chk').checked, exportContact = document.getElementById('export-contact-chk').checked;
-        let exportData = JSON.parse(JSON.stringify(appData));
-        if (!exportHw) exportData.homeworks = []; if (!exportTypes) exportData.homeworkTypes = DEFAULT_TYPES; 
-        if (!exportContact) exportData.classes.forEach(c => c.contactBook = {});
-        else {
-            const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); const limitDateStr = formatDate(thirtyDaysAgo, 'YYYY-MM-DD');
-            exportData.classes.forEach(c => {
-                if (c.contactBook) {
-                    const filteredBook = {};
-                    for (const [date, items] of Object.entries(c.contactBook)) { if (date >= limitDateStr) filteredBook[date] = items; }
-                    c.contactBook = filteredBook;
-                }
-            });
-        }
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
-        const downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", `作業點收備份_${formatDate(new Date(), 'YYYY-MM-DD')}.json`);
-        document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove(); closeModal(document.getElementById('data-management-modal'));
-        showToast("已成功下載 JSON 備份檔！", "success");
-    });
-
-    const triggerImport = document.getElementById('trigger-import-btn');
-    if(triggerImport) triggerImport.addEventListener('click', () => { document.getElementById('import-file-input').click(); });
-
-    const importInput = document.getElementById('import-file-input');
-    if(importInput) importInput.addEventListener('change', (e) => {
-        const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
-        reader.onload = async (e) => {
+        bindClick('link-file-btn', async () => {
             try {
-                const data = JSON.parse(e.target.result);
-                if(!data.classes || !data.homeworks || !data.homeworkTypes) throw new Error("無效的備份檔案格式");
-                showConfirmModal('手動還原覆蓋資料', '確定要將此 JSON 備份完整覆蓋目前所有的班級與作業嗎？這將無法復原！', async () => {
-                     closeModal(document.getElementById('data-management-modal')); appData = data; fixDates(appData); await saveData(); showToast("手動資料匯入還原完成！", "success"); window.location.reload(); 
-                });
-            } catch(err) { showAlertModal("匯入失敗", "讀取備份檔案失敗：" + err.message); }
-        };
-        reader.readAsText(file); e.target.value = ''; 
-    });
-
-    document.querySelectorAll('.cancel-btn, #close-warning-btn').forEach(btn => btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal'))));
-    
-    const hwForm = document.getElementById('add-homework-form');
-    if(hwForm) hwForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const editId = document.getElementById('edit-homework-id').value, name = document.getElementById('homework-name').value.trim(), typeId = document.getElementById('homework-type-select').value;
-        closeModal(document.getElementById('add-homework-modal'));
-        if (editId) { 
-            const hw = appData.homeworks.find(h => h.id === editId); if (hw && name) { hw.name = name; await saveData(); showToast("修改作業名稱成功！"); renderHomeworkList(); }
-        } else { 
-            const studentCount = parseInt(document.getElementById('student-count').value), missingInput = document.getElementById('homework-missing-seats').value;
-            let missingSeats = [];
-            const parts = missingInput.replace(/，/g, ',').split(/[\s,]+/);
-            for (let part of parts) {
-                part = part.trim(); if (!part) continue;
-                if (part.includes('-')) {
-                    const [startStr, endStr] = part.split('-'); const start = parseInt(startStr), end = parseInt(endStr);
-                    if (!isNaN(start) && !isNaN(end) && start <= end) { for (let i = start; i <= end; i++) missingSeats.push(i); }
-                } else {
-                    const num = parseInt(part); if (!isNaN(num)) missingSeats.push(num);
-                }
-            }
-            if (name && studentCount > 0 && currentClassId) {
-                const typeConfig = getHomeworkType(typeId); const initialStatus = typeConfig.statuses[0].key; const students = [];
-                for (let i = 1; i <= studentCount; i++) { if (!missingSeats.includes(i)) students.push({ seat: i, status: initialStatus }); }
-                const currentClass = appData.classes.find(c => c.id === currentClassId);
-                if (currentClass) { currentClass.lastMaxSeat = studentCount; currentClass.lastMissingSeats = missingInput; }
-                appData.homeworks.push({ id: generateId(), classId: currentClassId, name, studentCount: students.length, typeId, createdAt: new Date(), students: students });
-                await saveData(); showToast("成功新增點收項目！", "success"); renderHomeworkList();
-            }
-        }
-    });
-
-    const batchBtn = document.getElementById('batch-status-btn');
-    if(batchBtn) batchBtn.addEventListener('click', async () => {
-        if (!currentHomeworkId) return;
-        const targetStatus = document.getElementById('batch-status-select').value, statusText = document.querySelector('#batch-status-select option:checked').textContent, hw = appData.homeworks.find(h => h.id === currentHomeworkId);
-        if (!hw) return;
-        showConfirmModal('全班一鍵套用變更', `確定要將目前這份作業的所有座號均套用變更為「${statusText}」嗎？`, async () => {
-            hw.students.forEach(s => s.status = targetStatus); renderStudentGrid(currentHomeworkId); await saveData(); showToast("已套用全班狀態變更！", "success");
-        });
-    });
-
-    const newTypeBtn = document.getElementById('add-new-type-btn');
-    if(newTypeBtn) newTypeBtn.addEventListener('click', async () => {
-        appData.homeworkTypes.push({
-            id: `custom-${Date.now()}`, name: '新作業種類',
-            statuses: [ { key: 's1', text: '未繳交', color: 'bg-slate-200', textColor: 'text-slate-500', isCompleted: false }, { key: 's2', text: '已完成', color: 'bg-emerald-500', textColor: 'text-white', isCompleted: true } ]
-        });
-        await saveData(); showToast("已新增自訂作業種類！"); renderHomeworkTypesPage();
-    });
-
-    const typesList = document.getElementById('types-list');
-    if(typesList) {
-        typesList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('delete-type-btn')) {
-                const idx = parseInt(e.target.dataset.typeIndex); if (appData.homeworkTypes[idx].id === 'default') return; 
-                showConfirmModal('刪除作業種類', `確定要將自訂種類「${appData.homeworkTypes[idx].name}」刪除嗎？`, async () => {
-                    appData.homeworkTypes.splice(idx, 1); await saveData(); renderHomeworkTypesPage(); showToast("已刪除該自訂作業種類。", "info");
-                });
-                return;
-            }
-            if (e.target.classList.contains('add-status-btn')) {
-                const idx = parseInt(e.target.dataset.typeIndex); 
-                if (appData.homeworkTypes[idx].statuses.length >= 4) { 
-                    showToast("每個種類最多支援 4 個核心狀態", "error"); 
-                    return; 
-                }
-                appData.homeworkTypes[idx].statuses.push({ key: `s${Date.now()}`, text: '新狀態', color: 'bg-slate-200', textColor: 'text-slate-500', isCompleted: false });
-                await saveData(); renderHomeworkTypesPage(); showToast("已新增一個狀態！"); return;
-            }
-            if (e.target.classList.contains('delete-status-btn')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex), statusIdx = parseInt(e.target.dataset.statusIndex);
-                if (appData.homeworkTypes[typeIdx].statuses.length <= 2) { 
-                    showToast("每個種類最少需要 2 個狀態以利切換", "error"); 
-                    return; 
-                }
-                appData.homeworkTypes[typeIdx].statuses.splice(statusIdx, 1); await saveData(); renderHomeworkTypesPage(); showToast("已移除狀態。"); return;
-            }
-            if (e.target.classList.contains('color-dot')) {
-                const typeIdx = parseInt(e.target.dataset.typeIndex), statusIdx = parseInt(e.target.dataset.statusIndex);
-                const currentClass = appData.homeworkTypes[typeIdx].statuses[statusIdx].color;
-                let colorIndex = STATUS_COLORS.findIndex(c => c.class === currentClass); if(colorIndex === -1) colorIndex = 0;
-                const nextColor = STATUS_COLORS[(colorIndex + 1) % STATUS_COLORS.length];
-                appData.homeworkTypes[typeIdx].statuses[statusIdx].color = nextColor.class; appData.homeworkTypes[typeIdx].statuses[statusIdx].textColor = nextColor.textClass;
-                await saveData(); renderHomeworkTypesPage(); return;
-            }
+                if (!window.showSaveFilePicker) throw new Error("您的瀏覽器不支援此功能");
+                const handle = await window.showSaveFilePicker({ suggestedName: '作業點收資料.json', types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }] });
+                fileHandle = handle; await saveFileHandle(handle); await syncFromFileHandle(); await saveData(); 
+                document.getElementById('sync-banner').classList.add('hidden'); document.body.classList.remove('has-banner');
+                updateDataManagementUI(); fullRender(); showToast("已安全連結硬碟儲存檔案！", "success");
+            } catch (e) { if (e.name !== 'AbortError') showAlertModal("無法連結檔案", "錯誤細節：" + e.message); }
         });
 
-        typesList.addEventListener('change', async (e) => {
-            if (e.target.classList.contains('type-name-input')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].name = e.target.value.trim(); await saveData(); }
-            if (e.target.classList.contains('status-name-input')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].statuses[parseInt(e.target.dataset.statusIndex)].text = e.target.value.trim(); await saveData(); }
-            if (e.target.classList.contains('is-completed-check')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].statuses[parseInt(e.target.dataset.statusIndex)].isCompleted = e.target.checked; await saveData(); }
-        });
-    }
-    
-    const sortHw = document.getElementById('sort-homework'); if(sortHw) sortHw.addEventListener('change', renderHomeworkList);
-    const sortDetail = document.getElementById('sort-student-detail'); if(sortDetail) sortDetail.addEventListener('change', renderStudentDetailsPage);
-
-    const classForm = document.getElementById('add-class-form');
-    if(classForm) classForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); const className = document.getElementById('class-name').value.trim();
-        if(className) {
-            appData.classes.push({ id: generateId(), name: className, contactBook: {} }); await saveData(); document.getElementById('class-name').value = ''; renderClassSelector(); renderClassList();
-            if(!currentClassId) { currentClassId = appData.classes[0].id; localStorage.setItem('currentClassId', currentClassId); renderHomeworkList(); }
-            closeModal(document.getElementById('manage-classes-modal'));
-            showToast(`已成功新增班級「${className}」！`, "success");
-        }
-    });
-
-    const hwListEl = document.getElementById('homework-list');
-    if(hwListEl) hwListEl.addEventListener('click', (e) => {
-        const deleteBtn = e.target.closest('.delete-hw-btn'), editBtn = e.target.closest('.edit-hw-btn');
-        if (deleteBtn) {
-            e.stopPropagation(); const homeworkId = deleteBtn.dataset.id; const hw = appData.homeworks.find(h => h.id === homeworkId);
-            showConfirmModal('擦除作業點收項目', `確定要將「${hw.name}」完全從系統移出嗎？此操作無法恢復。`, async () => { appData.homeworks = appData.homeworks.filter(h => h.id !== homeworkId); await saveData(); showToast("作業已被刪除。", "info"); renderHomeworkList(); }); return;
-        }
-        if (editBtn) {
-            e.stopPropagation(); const homeworkId = editBtn.dataset.id; const hw = appData.homeworks.find(h => h.id === homeworkId);
-            const modal = document.getElementById('add-homework-modal'); document.getElementById('homework-modal-title').textContent = '更改作業名稱'; modal.querySelector('form').reset();
-            document.getElementById('homework-name').value = hw ? hw.name : ''; document.getElementById('edit-homework-id').value = homeworkId; document.getElementById('student-count-container').style.display = 'none'; document.getElementById('homework-type-container').style.display = 'none'; document.getElementById('missing-seats-hint').style.display = 'none'; openModal(modal); return;
-        }
-        const hwItem = e.target.closest('[data-id]');
-        if (hwItem) { document.getElementById('detail-page').dataset.from = 'main-page'; showDetailPage(hwItem.dataset.id); }
-    });
-    
-    const classListEl = document.getElementById('class-list');
-    if(classListEl) classListEl.addEventListener('click', (e) => {
-         if (e.target.closest('.delete-class-btn')) {
-            e.stopPropagation(); const btn = e.target.closest('.delete-class-btn'); const classId = btn.dataset.id; const className = btn.dataset.name;
-            showConfirmModal('移除班級', `警告：確定要將「${className}」連同該班所有作業點收記錄一併移除嗎？這將會同步擦除所有歷史登錄！`, async () => {
-                appData.classes = appData.classes.filter(c => c.id !== classId); appData.homeworks = appData.homeworks.filter(h => h.classId !== classId);
-                if(currentClassId === classId) { currentClassId = appData.classes.length > 0 ? appData.classes[0].id : null; if(currentClassId) localStorage.setItem('currentClassId', currentClassId); else localStorage.removeItem('currentClassId'); }
-                await saveData(); renderClassSelector(); renderClassList(); renderHomeworkList(); showToast("已成功移除該班級。", "info");
+        bindClick('unlink-file-btn', async () => {
+            showConfirmModal('解除安全連結', '確定要解除本地硬碟檔案連結嗎？解除後資料將僅儲存於瀏覽器暫存區。', async () => {
+                await clearFileHandle(); fileHandle = null; updateDataManagementUI(); showToast("已解除硬碟檔案連結", "info");
             });
-         }
-    });
+        });
 
-    const studentDetailsList = document.getElementById('student-details-list');
-    if(studentDetailsList) studentDetailsList.addEventListener('click', (e) => {
-        if(e.target.classList.contains('homework-link')) { document.getElementById('detail-page').dataset.from = 'student-details-page'; showDetailPage(e.target.dataset.id); }
-    });
+        bindClick('export-data-btn', () => {
+            const exportHw = document.getElementById('export-hw-chk').checked, exportTypes = document.getElementById('export-types-chk').checked, exportContact = document.getElementById('export-contact-chk').checked;
+            let exportData = JSON.parse(JSON.stringify(appData));
+            if (!exportHw) exportData.homeworks = []; if (!exportTypes) exportData.homeworkTypes = DEFAULT_TYPES; 
+            if (!exportContact) exportData.classes.forEach(c => c.contactBook = {});
+            else {
+                const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); const limitDateStr = formatDate(thirtyDaysAgo, 'YYYY-MM-DD');
+                exportData.classes.forEach(c => {
+                    if (c.contactBook) {
+                        const filteredBook = {};
+                        for (const [date, items] of Object.entries(c.contactBook)) { if (date >= limitDateStr) filteredBook[date] = items; }
+                        c.contactBook = filteredBook;
+                    }
+                });
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
+            const downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", `作業點收備份_${formatDate(new Date(), 'YYYY-MM-DD')}.json`);
+            document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove(); closeModal(document.getElementById('data-management-modal'));
+            showToast("已成功下載 JSON 備份檔！", "success");
+        });
 
-    const classSel = document.getElementById('class-selector');
-    if(classSel) classSel.addEventListener('change', (e) => { currentClassId = e.target.value; localStorage.setItem('currentClassId', currentClassId); renderHomeworkList(); });
+        bindClick('trigger-import-btn', () => document.getElementById('import-file-input').click());
 
-    const fInc = document.getElementById('font-increase-btn');
-    if(fInc) fInc.addEventListener('click', () => { blackboardFontSize += 0.1; document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`; });
+        bindChange('import-file-input', (e) => {
+            const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(!data.classes || !data.homeworks || !data.homeworkTypes) throw new Error("無效的備份檔案格式");
+                    showConfirmModal('手動還原覆蓋資料', '確定要將此 JSON 備份完整覆蓋目前所有的班級與作業嗎？這將無法復原！', async () => {
+                         closeModal(document.getElementById('data-management-modal')); appData = data; fixDates(appData); await saveData(); showToast("手動資料匯入還原完成！", "success"); window.location.reload(); 
+                    });
+                } catch(err) { showAlertModal("匯入失敗", "讀取備份檔案失敗：" + err.message); }
+            };
+            reader.readAsText(file); e.target.value = ''; 
+        });
 
-    const fDec = document.getElementById('font-decrease-btn');
-    if(fDec) fDec.addEventListener('click', () => { if(blackboardFontSize > 0.5) { blackboardFontSize -= 0.1; document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`; } });
+        bindSubmit('add-homework-form', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('edit-homework-id').value, name = document.getElementById('homework-name').value.trim(), typeId = document.getElementById('homework-type-select').value;
+            closeModal(document.getElementById('add-homework-modal'));
+            if (editId) { 
+                const hw = appData.homeworks.find(h => h.id === editId); if (hw && name) { hw.name = name; await saveData(); showToast("修改作業名稱成功！"); renderHomeworkList(); }
+            } else { 
+                const studentCount = parseInt(document.getElementById('student-count').value), missingInput = document.getElementById('homework-missing-seats').value;
+                let missingSeats = [];
+                const parts = missingInput.replace(/，/g, ',').split(/[\s,]+/);
+                for (let part of parts) {
+                    part = part.trim(); if (!part) continue;
+                    if (part.includes('-')) {
+                        const [startStr, endStr] = part.split('-'); const start = parseInt(startStr), end = parseInt(endStr);
+                        if (!isNaN(start) && !isNaN(end) && start <= end) { for (let i = start; i <= end; i++) missingSeats.push(i); }
+                    } else {
+                        const num = parseInt(part); if (!isNaN(num)) missingSeats.push(num);
+                    }
+                }
+                if (name && studentCount > 0 && currentClassId) {
+                    const typeConfig = getHomeworkType(typeId); const initialStatus = typeConfig.statuses[0].key; const students = [];
+                    for (let i = 1; i <= studentCount; i++) { if (!missingSeats.includes(i)) students.push({ seat: i, status: initialStatus }); }
+                    const currentClass = appData.classes.find(c => c.id === currentClassId);
+                    if (currentClass) { currentClass.lastMaxSeat = studentCount; currentClass.lastMissingSeats = missingInput; }
+                    appData.homeworks.push({ id: generateId(), classId: currentClassId, name, studentCount: students.length, typeId, createdAt: new Date(), students: students });
+                    await saveData(); showToast("成功新增點收項目！", "success"); renderHomeworkList();
+                }
+            }
+        });
 
-    const contactForm = document.getElementById('add-contact-item-form');
-    if(contactForm) contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); const input = document.getElementById('contact-book-input'), newItem = input.value.trim(), dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-        if (newItem && currentClassId) {
-            const currentClass = appData.classes.find(c => c.id === currentClassId); if (!currentClass) return;
-            if(!currentClass.contactBook) currentClass.contactBook = {}; if(!currentClass.contactBook[dateString]) currentClass.contactBook[dateString] = [];
-            currentClass.contactBook[dateString].push(newItem); await saveData(); renderContactBookItems(); input.value = ''; showToast("已寫上黑板！", "success");
+        bindClick('batch-status-btn', async () => {
+            if (!currentHomeworkId) return;
+            const targetStatus = document.getElementById('batch-status-select').value, statusText = document.querySelector('#batch-status-select option:checked').textContent, hw = appData.homeworks.find(h => h.id === currentHomeworkId);
+            if (!hw) return;
+            showConfirmModal('全班一鍵套用變更', `確定要將目前這份作業的所有座號均套用變更為「${statusText}」嗎？`, async () => {
+                (hw.students || []).forEach(s => s.status = targetStatus); renderStudentGrid(currentHomeworkId); await saveData(); showToast("已套用全班狀態變更！", "success");
+            });
+        });
+
+        bindClick('add-new-type-btn', async () => {
+            appData.homeworkTypes.push({
+                id: `custom-${Date.now()}`, name: '新作業種類',
+                statuses: [ { key: 's1', text: '未繳交', color: 'bg-slate-200', textColor: 'text-slate-500', isCompleted: false }, { key: 's2', text: '已完成', color: 'bg-emerald-500', textColor: 'text-white', isCompleted: true } ]
+            });
+            await saveData(); showToast("已新增自訂作業種類！"); renderHomeworkTypesPage();
+        });
+
+        const typesList = document.getElementById('types-list');
+        if(typesList) {
+            typesList.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('delete-type-btn')) {
+                    const idx = parseInt(e.target.dataset.typeIndex); if (appData.homeworkTypes[idx].id === 'default') return; 
+                    showConfirmModal('刪除作業種類', `確定要將自訂種類「${appData.homeworkTypes[idx].name}」刪除嗎？`, async () => {
+                        appData.homeworkTypes.splice(idx, 1); await saveData(); renderHomeworkTypesPage(); showToast("已刪除該自訂作業種類。", "info");
+                    });
+                    return;
+                }
+                if (e.target.classList.contains('add-status-btn')) {
+                    const idx = parseInt(e.target.dataset.typeIndex); 
+                    if (appData.homeworkTypes[idx].statuses.length >= 4) { showToast("每個種類最多支援 4 個核心狀態", "error"); return; }
+                    appData.homeworkTypes[idx].statuses.push({ key: `s${Date.now()}`, text: '新狀態', color: 'bg-slate-200', textColor: 'text-slate-500', isCompleted: false });
+                    await saveData(); renderHomeworkTypesPage(); showToast("已新增一個狀態！"); return;
+                }
+                if (e.target.classList.contains('delete-status-btn')) {
+                    const typeIdx = parseInt(e.target.dataset.typeIndex), statusIdx = parseInt(e.target.dataset.statusIndex);
+                    if (appData.homeworkTypes[typeIdx].statuses.length <= 2) { showToast("每個種類最少需要 2 個狀態以利切換", "error"); return; }
+                    appData.homeworkTypes[typeIdx].statuses.splice(statusIdx, 1); await saveData(); renderHomeworkTypesPage(); showToast("已移除狀態。"); return;
+                }
+                if (e.target.classList.contains('color-dot')) {
+                    const typeIdx = parseInt(e.target.dataset.typeIndex), statusIdx = parseInt(e.target.dataset.statusIndex);
+                    const currentClass = appData.homeworkTypes[typeIdx].statuses[statusIdx].color;
+                    let colorIndex = STATUS_COLORS.findIndex(c => c.class === currentClass); if(colorIndex === -1) colorIndex = 0;
+                    const nextColor = STATUS_COLORS[(colorIndex + 1) % STATUS_COLORS.length];
+                    appData.homeworkTypes[typeIdx].statuses[statusIdx].color = nextColor.class; appData.homeworkTypes[typeIdx].statuses[statusIdx].textColor = nextColor.textClass;
+                    await saveData(); renderHomeworkTypesPage(); return;
+                }
+            });
+
+            typesList.addEventListener('change', async (e) => {
+                if (e.target.classList.contains('type-name-input')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].name = e.target.value.trim(); await saveData(); }
+                if (e.target.classList.contains('status-name-input')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].statuses[parseInt(e.target.dataset.statusIndex)].text = e.target.value.trim(); await saveData(); }
+                if (e.target.classList.contains('is-completed-check')) { appData.homeworkTypes[parseInt(e.target.dataset.typeIndex)].statuses[parseInt(e.target.dataset.statusIndex)].isCompleted = e.target.checked; await saveData(); }
+            });
         }
-    });
 
-    const blackboardEl = document.getElementById('blackboard-content');
-    if(blackboardEl) blackboardEl.addEventListener('click', async (e) => {
-        if (!currentClassId) return;
-        const currentClass = appData.classes.find(c => c.id === currentClassId), dateString = formatDate(selectedDate, 'YYYY-MM-DD');
-        const deleteBtn = e.target.closest('.delete-contact-item-btn');
-        if (deleteBtn) { 
-            currentClass.contactBook[dateString] = currentClass.contactBook[dateString].filter((_, index) => index !== parseInt(deleteBtn.dataset.index)); 
-            await saveData(); renderContactBookItems(); showToast("已從黑板擦除！", "info"); return; 
-        }
-        const editBtn = e.target.closest('.edit-contact-btn');
-        if (editBtn) {
-            const index = parseInt(editBtn.dataset.index), newText = prompt('請修改聯絡簿事項：', currentClass.contactBook[dateString][index]);
-            if (newText && newText.trim() !== '') { currentClass.contactBook[dateString][index] = newText.trim(); await saveData(); renderContactBookItems(); showToast("修改黑板內容成功！"); } return;
-        }
-        const toHwBtn = e.target.closest('.to-hw-btn');
-        if (toHwBtn) {
-            const index = parseInt(toHwBtn.dataset.index), modal = document.getElementById('add-homework-modal');
-            document.getElementById('homework-modal-title').textContent = '新增聯絡簿作業'; modal.querySelector('form').reset(); document.getElementById('homework-name').value = currentClass.contactBook[dateString][index]; document.getElementById('edit-homework-id').value = '';
-            document.getElementById('student-count-container').style.display = 'grid'; document.getElementById('homework-type-container').style.display = 'block'; document.getElementById('missing-seats-hint').style.display = 'block'; updateTypeSelects(); 
-            if (currentClass && currentClass.lastMaxSeat) { document.getElementById('student-count').value = currentClass.lastMaxSeat; document.getElementById('homework-missing-seats').value = currentClass.lastMissingSeats || ''; } 
-            else { const classHws = appData.homeworks.filter(h => h.classId === currentClassId); if(classHws.length > 0) { let maxSeat = 0; classHws[classHws.length-1].students.forEach(s => maxSeat = Math.max(maxSeat, s.seat)); document.getElementById('student-count').value = maxSeat || 30; } else document.getElementById('student-count').value = 30; }
-            openModal(modal);
-        }
-    });
+        bindChange('sort-homework', renderHomeworkList);
+        bindChange('sort-student-detail', renderStudentDetailsPage);
 
-    const clearContactBtn = document.getElementById('clear-contact-book-btn');
-    if(clearContactBtn) clearContactBtn.addEventListener('click', () => {
-        if (!currentClassId) return;
-        showConfirmModal('清空本日聯絡簿', `您確定要清空 ${formatDate(selectedDate)} 的所有聯絡簿事項嗎？`, async () => { appData.classes.find(c => c.id === currentClassId).contactBook[formatDate(selectedDate, 'YYYY-MM-DD')] = []; await saveData(); renderContactBookItems(); showToast("本日聯絡簿已全部清空。", "info"); });
-    });
+        bindSubmit('add-class-form', async (e) => {
+            e.preventDefault(); const className = document.getElementById('class-name').value.trim();
+            if(className) {
+                appData.classes.push({ id: generateId(), name: className, contactBook: {} }); await saveData(); document.getElementById('class-name').value = ''; renderClassSelector(); renderClassList();
+                if(!currentClassId) { currentClassId = appData.classes[0].id; localStorage.setItem('currentClassId', currentClassId); renderHomeworkList(); }
+                closeModal(document.getElementById('manage-classes-modal')); showToast(`已成功新增班級「${className}」！`, "success");
+            }
+        });
 
-    const clearAllContactBtn = document.getElementById('clear-all-contact-book-btn');
-    if(clearAllContactBtn) clearAllContactBtn.addEventListener('click', () => {
-        if (!currentClassId) return;
-        showConfirmModal('刪除全部聯絡簿', `警告：您確定要刪除當前班級「所有日期」的聯絡簿內容嗎？此操作將會完全清空，且無法復原。`, async () => { appData.classes.find(c => c.id === currentClassId).contactBook = {}; await saveData(); renderContactBookItems(); showToast("全部聯絡簿記錄已清空。", "info"); });
-    });
+        const hwListEl = document.getElementById('homework-list');
+        if(hwListEl) hwListEl.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-hw-btn'), editBtn = e.target.closest('.edit-hw-btn');
+            if (deleteBtn) {
+                e.stopPropagation(); const homeworkId = deleteBtn.dataset.id; const hw = appData.homeworks.find(h => h.id === homeworkId);
+                showConfirmModal('擦除作業點收項目', `確定要將「${hw.name}」完全從系統移出嗎？此操作無法恢復。`, async () => { appData.homeworks = appData.homeworks.filter(h => h.id !== homeworkId); await saveData(); showToast("作業已被刪除。", "info"); renderHomeworkList(); }); return;
+            }
+            if (editBtn) {
+                e.stopPropagation(); const homeworkId = editBtn.dataset.id; const hw = appData.homeworks.find(h => h.id === homeworkId);
+                const modal = document.getElementById('add-homework-modal'); document.getElementById('homework-modal-title').textContent = '更改作業名稱'; modal.querySelector('form').reset();
+                document.getElementById('homework-name').value = hw ? hw.name : ''; document.getElementById('edit-homework-id').value = homeworkId; document.getElementById('student-count-container').style.display = 'none'; document.getElementById('homework-type-container').style.display = 'none'; document.getElementById('missing-seats-hint').style.display = 'none'; openModal(modal); return;
+            }
+            const hwItem = e.target.closest('[data-id]');
+            if (hwItem) { document.getElementById('detail-page').dataset.from = 'main-page'; showDetailPage(hwItem.dataset.id); }
+        });
+        
+        const classListEl = document.getElementById('class-list');
+        if(classListEl) classListEl.addEventListener('click', (e) => {
+             if (e.target.closest('.delete-class-btn')) {
+                e.stopPropagation(); const btn = e.target.closest('.delete-class-btn'); const classId = btn.dataset.id; const className = btn.dataset.name;
+                showConfirmModal('移除班級', `警告：確定要將「${className}」連同該班所有作業點收記錄一併移除嗎？這將會同步擦除所有歷史登錄！`, async () => {
+                    appData.classes = appData.classes.filter(c => c.id !== classId); appData.homeworks = appData.homeworks.filter(h => h.classId !== classId);
+                    if(currentClassId === classId) { currentClassId = appData.classes.length > 0 ? appData.classes[0].id : null; if(currentClassId) localStorage.setItem('currentClassId', currentClassId); else localStorage.removeItem('currentClassId'); }
+                    await saveData(); renderClassSelector(); renderClassList(); renderHomeworkList(); showToast("已成功移除該班級。", "info");
+                });
+             }
+        });
 
-    const applyYestBtn = document.getElementById('apply-yesterday-btn');
-    if(applyYestBtn) applyYestBtn.addEventListener('click', async () => {
-        if (!currentClassId) return;
-        const yesterday = new Date(selectedDate); yesterday.setDate(selectedDate.getDate() - 1);
-        const yStr = formatDate(yesterday, 'YYYY-MM-DD'), tStr = formatDate(selectedDate, 'YYYY-MM-DD'), currentClass = appData.classes.find(c => c.id === currentClassId), yesterdayItems = currentClass?.contactBook?.[yStr];
-        if (!yesterdayItems || yesterdayItems.length === 0) { showToast('昨日沒有聯絡簿內容可供套用。', 'error'); return; }
-        showConfirmModal('套用昨日內容', '確定要用昨日的內容覆蓋今天的聯絡簿嗎？這將覆蓋本日現有內容！', async () => { if(!currentClass.contactBook) currentClass.contactBook = {}; currentClass.contactBook[tStr] = [...yesterdayItems]; await saveData(); renderContactBookItems(); showToast("已成功載入昨日內文！", "success"); });
-    });
-    
-    const openDatePickerBtn = document.getElementById('open-date-picker-btn'); if(openDatePickerBtn) openDatePickerBtn.addEventListener('click', () => { calendarDate = new Date(selectedDate); renderCalendar(); openModal(document.getElementById('date-picker-modal')); });
-    const closeDatePickerBtn = document.getElementById('close-date-picker-btn'); if(closeDatePickerBtn) closeDatePickerBtn.addEventListener('click', () => closeModal(document.getElementById('date-picker-modal')));
-    const prevMonthBtn = document.getElementById('prev-month-btn'); if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); });
-    const nextMonthBtn = document.getElementById('next-month-btn'); if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); });
-    const calGrid = document.getElementById('calendar-grid');
-    if(calGrid) calGrid.addEventListener('click', (e) => {
-        const dayBtn = e.target.closest('.calendar-day');
-        if (dayBtn) { selectedDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), parseInt(dayBtn.dataset.day)); renderContactBookItems(); closeModal(document.getElementById('date-picker-modal')); }
-    });
+        const studentDetailsList = document.getElementById('student-details-list');
+        if(studentDetailsList) studentDetailsList.addEventListener('click', (e) => {
+            if(e.target.classList.contains('homework-link')) { document.getElementById('detail-page').dataset.from = 'student-details-page'; showDetailPage(e.target.dataset.id); }
+        });
 
-    const welcomeSkipBtn = document.getElementById('welcome-skip-btn');
-    if(welcomeSkipBtn) welcomeSkipBtn.addEventListener('click', () => { localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal')); showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal')); });
+        bindChange('class-selector', (e) => { currentClassId = e.target.value; localStorage.setItem('currentClassId', currentClassId); renderHomeworkList(); });
 
-    const welcomeLinkBtn = document.getElementById('welcome-link-btn');
-    if(welcomeLinkBtn) welcomeLinkBtn.addEventListener('click', async () => {
-        if (!window.showSaveFilePicker) { showAlertModal("瀏覽器限制", "很抱歉，您的瀏覽器不支援自動儲存本地檔案功能。系統將為您切換至「瀏覽器暫存模式」。"); localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal')); showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal')); return; }
-        try {
-            const handle = await window.showSaveFilePicker({ suggestedName: '作業點收資料.json', types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }] });
-            fileHandle = handle; await saveFileHandle(handle); await syncFromFileHandle(); await saveData(); localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal'));
-            setTimeout(() => { showToast("✅ 成功建立並綁定實體檔案！系統將自動即時同步變更。", "success"); }, 300);
-            showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal'));
-        } catch(e) { if (e.name !== 'AbortError') showAlertModal("無法建立檔案連結", "錯誤細節：" + e.message); }
-    });
+        bindClick('font-increase-btn', () => { blackboardFontSize += 0.1; document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`; localStorage.setItem('hw_pref_fontSize', blackboardFontSize); });
+        bindClick('font-decrease-btn', () => { if(blackboardFontSize > 0.5) { blackboardFontSize -= 0.1; document.getElementById('blackboard-content').style.fontSize = `${blackboardFontSize}rem`; localStorage.setItem('hw_pref_fontSize', blackboardFontSize); } });
+        bindClick('lineheight-increase-btn', () => { blackboardLineHeight += 0.2; document.getElementById('blackboard-content').style.lineHeight = `${blackboardLineHeight}`; localStorage.setItem('hw_pref_lineHeight', blackboardLineHeight); });
+        bindClick('lineheight-decrease-btn', () => { if(blackboardLineHeight > 1.0) { blackboardLineHeight -= 0.2; document.getElementById('blackboard-content').style.lineHeight = `${blackboardLineHeight}`; localStorage.setItem('hw_pref_lineHeight', blackboardLineHeight); } });
 
-    const resumeSyncBtn = document.getElementById('resume-sync-btn');
-    if(resumeSyncBtn) resumeSyncBtn.addEventListener('click', async () => {
-        if (!fileHandle) return;
-        try {
-            if ((await fileHandle.requestPermission({ mode: 'readwrite' })) === 'granted') { document.getElementById('sync-banner').classList.add('hidden'); document.body.classList.remove('has-banner'); await syncFromFileHandle(); reRenderCurrentPage(); showToast("硬碟檔案連線已重新恢復！", "success"); }
-        } catch(e) { console.error(e); }
-    });
+        bindSubmit('add-contact-item-form', async (e) => {
+            e.preventDefault(); const input = document.getElementById('contact-book-input'), newItem = input.value.trim(), dateString = formatDate(selectedDate, 'YYYY-MM-DD');
+            if (newItem && currentClassId) {
+                const currentClass = appData.classes.find(c => c.id === currentClassId); if (!currentClass) return;
+                if(!currentClass.contactBook) currentClass.contactBook = {}; if(!currentClass.contactBook[dateString]) currentClass.contactBook[dateString] = [];
+                currentClass.contactBook[dateString].push(newItem); await saveData(); renderContactBookItems(); input.value = ''; showToast("已寫上黑板！", "success");
+            }
+        });
+
+        const blackboardEl = document.getElementById('blackboard-content');
+        if(blackboardEl) blackboardEl.addEventListener('click', async (e) => {
+            if (!currentClassId) return;
+            const currentClass = appData.classes.find(c => c.id === currentClassId), dateString = formatDate(selectedDate, 'YYYY-MM-DD');
+            const deleteBtn = e.target.closest('.delete-contact-item-btn');
+            if (deleteBtn) { 
+                currentClass.contactBook[dateString] = currentClass.contactBook[dateString].filter((_, index) => index !== parseInt(deleteBtn.dataset.index)); 
+                await saveData(); renderContactBookItems(); showToast("已從黑板擦除！", "info"); return; 
+            }
+            const editBtn = e.target.closest('.edit-contact-btn');
+            if (editBtn) {
+                const index = parseInt(editBtn.dataset.index), newText = prompt('請修改聯絡簿事項：', currentClass.contactBook[dateString][index]);
+                if (newText && newText.trim() !== '') { currentClass.contactBook[dateString][index] = newText.trim(); await saveData(); renderContactBookItems(); showToast("修改黑板內容成功！"); } return;
+            }
+            const toHwBtn = e.target.closest('.to-hw-btn');
+            if (toHwBtn) {
+                const index = parseInt(toHwBtn.dataset.index), modal = document.getElementById('add-homework-modal');
+                document.getElementById('homework-modal-title').textContent = '新增聯絡簿作業'; modal.querySelector('form').reset(); document.getElementById('homework-name').value = currentClass.contactBook[dateString][index]; document.getElementById('edit-homework-id').value = '';
+                document.getElementById('student-count-container').style.display = 'grid'; document.getElementById('homework-type-container').style.display = 'block'; document.getElementById('missing-seats-hint').style.display = 'block'; updateTypeSelects(); 
+                if (currentClass && currentClass.lastMaxSeat) { document.getElementById('student-count').value = currentClass.lastMaxSeat; document.getElementById('homework-missing-seats').value = currentClass.lastMissingSeats || ''; } 
+                else { const classHws = appData.homeworks.filter(h => h.classId === currentClassId); if(classHws.length > 0) { let maxSeat = 0; (classHws[classHws.length-1].students || []).forEach(s => maxSeat = Math.max(maxSeat, s.seat)); document.getElementById('student-count').value = maxSeat || 30; } else document.getElementById('student-count').value = 30; }
+                openModal(modal);
+            }
+        });
+
+        bindClick('clear-contact-book-btn', () => {
+            if (!currentClassId) return;
+            showConfirmModal('清空本日聯絡簿', `您確定要清空 ${formatDate(selectedDate)} 的所有聯絡簿事項嗎？`, async () => { appData.classes.find(c => c.id === currentClassId).contactBook[formatDate(selectedDate, 'YYYY-MM-DD')] = []; await saveData(); renderContactBookItems(); showToast("本日聯絡簿已全部清空。", "info"); });
+        });
+
+        bindClick('clear-all-contact-book-btn', () => {
+            if (!currentClassId) return;
+            showConfirmModal('刪除全部聯絡簿', `警告：您確定要刪除當前班級「所有日期」的聯絡簿內容嗎？此操作將會完全清空，且無法復原。`, async () => { appData.classes.find(c => c.id === currentClassId).contactBook = {}; await saveData(); renderContactBookItems(); showToast("全部聯絡簿記錄已清空。", "info"); });
+        });
+
+        bindClick('apply-yesterday-btn', async () => {
+            if (!currentClassId) return;
+            const yesterday = new Date(selectedDate); yesterday.setDate(selectedDate.getDate() - 1);
+            const yStr = formatDate(yesterday, 'YYYY-MM-DD'), tStr = formatDate(selectedDate, 'YYYY-MM-DD'), currentClass = appData.classes.find(c => c.id === currentClassId), yesterdayItems = currentClass?.contactBook?.[yStr];
+            if (!yesterdayItems || yesterdayItems.length === 0) { showToast('昨日沒有聯絡簿內容可供套用。', 'error'); return; }
+            showConfirmModal('套用昨日內容', '確定要用昨日的內容覆蓋今天的聯絡簿嗎？這將覆蓋本日現有內容！', async () => { if(!currentClass.contactBook) currentClass.contactBook = {}; currentClass.contactBook[tStr] = [...yesterdayItems]; await saveData(); renderContactBookItems(); showToast("已成功載入昨日內文！", "success"); });
+        });
+        
+        bindClick('open-date-picker-btn', () => { calendarDate = new Date(selectedDate); renderCalendar(); openModal(document.getElementById('date-picker-modal')); });
+        bindClick('close-date-picker-btn', () => closeModal(document.getElementById('date-picker-modal')));
+        bindClick('prev-month-btn', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); });
+        bindClick('next-month-btn', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); });
+        
+        const calGrid = document.getElementById('calendar-grid');
+        if(calGrid) calGrid.addEventListener('click', (e) => {
+            const dayBtn = e.target.closest('.calendar-day');
+            if (dayBtn) { selectedDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), parseInt(dayBtn.dataset.day)); renderContactBookItems(); closeModal(document.getElementById('date-picker-modal')); }
+        });
+
+        bindClick('welcome-skip-btn', () => { localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal')); showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal')); });
+
+        bindClick('welcome-link-btn', async () => {
+            if (!window.showSaveFilePicker) { showAlertModal("瀏覽器限制", "很抱歉，您的瀏覽器不支援自動儲存本地檔案功能。系統將為您切換至「瀏覽器暫存模式」。"); localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal')); showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal')); return; }
+            try {
+                const handle = await window.showSaveFilePicker({ suggestedName: '作業點收資料.json', types: [{ description: 'JSON 檔案', accept: { 'application/json': ['.json'] } }] });
+                fileHandle = handle; await saveFileHandle(handle); await syncFromFileHandle(); await saveData(); localStorage.setItem('hasSeenWelcome_final', 'true'); closeModal(document.getElementById('welcome-modal'));
+                setTimeout(() => { showToast("✅ 成功建立並綁定實體檔案！系統將自動即時同步變更。", "success"); }, 300);
+                showMainPage(); if(appData.classes.length === 0) openModal(document.getElementById('manage-classes-modal'));
+            } catch(e) { if (e.name !== 'AbortError') showAlertModal("無法建立檔案連結", "錯誤細節：" + e.message); }
+        });
+
+        bindClick('resume-sync-btn', async () => {
+            if (!fileHandle) return;
+            try {
+                if ((await fileHandle.requestPermission({ mode: 'readwrite' })) === 'granted') { document.getElementById('sync-banner').classList.add('hidden'); document.body.classList.remove('has-banner'); await syncFromFileHandle(); reRenderCurrentPage(); showToast("硬碟檔案連線已重新恢復！", "success"); }
+            } catch(e) { console.error(e); }
+        });
+
+        document.querySelectorAll('.cancel-btn, #close-warning-btn').forEach(btn => btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal'))));
+    }
 
     window.addEventListener('resize', () => { if (currentPage === 'detail-page' && currentHomeworkId) renderStudentGrid(currentHomeworkId); });
 
     async function init() {
         const localData = localStorage.getItem('homeworkAppData');
         if (localData) { appData = JSON.parse(localData); fixDates(appData); }
+        
+        // 保證所有事件監聽器只會被安全地掛載一次
         setupButtonEvents(); 
+        
         document.getElementById('loading-page').classList.add('hidden');
 
         if (!localStorage.getItem('hasSeenWelcome_final')) { openModal(document.getElementById('welcome-modal')); return; }
